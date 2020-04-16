@@ -1,5 +1,5 @@
 <template>
-    <div class="punshCardHome_container">
+    <div class="training_container">
         <router-view></router-view>
     </div>
 </template>

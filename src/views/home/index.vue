@@ -69,6 +69,20 @@
                                 </el-menu-item>
                               </el-menu-item-group>
                             </el-submenu>
+                            <el-submenu index="3">
+                              <template slot="title">
+                                <i class="el-icon-date"></i>
+                                <span>训练营管理</span>
+                              </template>
+                              <el-menu-item-group>
+                                <el-menu-item index="/drill">
+                                  <template slot="title">
+                                    <i class="el-icon-s-home"></i>
+                                    <span>训练营</span>
+                                  </template>
+                                </el-menu-item>
+                              </el-menu-item-group>
+                            </el-submenu>
                         </el-menu>
                 </el-aside>
                  <!-- 左侧侧边栏 -->

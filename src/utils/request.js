@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-
 const instance = axios.create({
   baseURL: 'http://training.test.luojigou.vip/'
 })
@@ -10,6 +9,11 @@ export const createAPI = (url, method, data) => {
   if (method === 'GET') {
     config.params = data
   } else {
+    if(method === 'POST' ){
+      config.headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+      }
+    }
     config.data = data
   }
   return instance({
@@ -20,7 +24,6 @@ export const createAPI = (url, method, data) => {
 }
 
 instance.interceptors.request.use(function (config) {
-//   config.headers.Authorization = getItem('token')
 
   return config
 }, function (error) {

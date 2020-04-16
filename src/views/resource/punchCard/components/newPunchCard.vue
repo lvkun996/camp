@@ -1,5 +1,4 @@
 <template>
-import { log } from 'util';
     <div class="newPunchCard_container">
             <breadcrumb>
               <template slot="title">资源管理 </template>
