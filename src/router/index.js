@@ -16,8 +16,36 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    component: () => import('@/views/home')
+    component: () => import('@/views/home'),
+    children: [
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('@/views/resource/video')
+      },
+      {
+        path: '/scene',
+        name: 'scene',
+        component: () => import('@/views/resource/scene')
+      },
+      {
+        path: '/punchCard',
+        name: 'punchCard',
+        component: () => import('@/views/resource/punchCard')
+      },
+      {
+        path: '/newPunchCard',
+        name: 'newPunchCard',
+        component: () => import('@/views/resource/punchCard/components/newPunchCard')
+      },
+      {
+        path: '/newVideo',
+        name: 'newVideo',
+        component: () => import('@/views/resource/video/components/newVideo')
+      }
+    ]
   }
+
 ]
 
 const router = new VueRouter({

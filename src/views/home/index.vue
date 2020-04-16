@@ -23,30 +23,31 @@
                           background-color="#333744"
                           text-color="#fff"
                           active-text-color="rgb(64, 158, 255)"
-                          :default-active="indexStatus"
+
                           :collapse="collapse"
                           :collapse-transition='false'
                           router
                           >
+                          <!--     :default-active="indexStatus" -->
                              <el-submenu index="1">
                               <template slot="title">
                                 <i class="el-icon-folder"></i>
                                 <span>资源管理</span>
                               </template>
                               <el-menu-item-group>
-                                <el-menu-item index="1-1">
+                                <el-menu-item index="/video">
                                   <template slot="title">
                                       <i class="el-icon-video-camera"></i>
                                       <span>视频管理</span>
                                   </template>
                                 </el-menu-item>
-                                <el-menu-item index="1-2">
+                                <el-menu-item index="/scene">
                                     <template slot="title">
                                         <i class="el-icon-refresh-left"></i>
                                         <span>情景流程</span>
                                   </template>
                                 </el-menu-item>
-                                <el-menu-item index="1-2">
+                                <el-menu-item index="/punchCard">
                                    <template slot="title">
                                       <i class="el-icon-coordinate"></i>
                                       <span>打卡管理</span>

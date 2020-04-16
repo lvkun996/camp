@@ -7,7 +7,13 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/style/index.less'
 
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 import plugins from '@/components'
+
+Vue.use(VueQuillEditor)
 
 Vue.use(plugins)
 Vue.use(ElementUI)
