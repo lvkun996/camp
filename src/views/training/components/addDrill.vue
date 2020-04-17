@@ -7,15 +7,14 @@
     </breadcrumb>
     <Card>
       <template slot="content">
-        <el-form enctype="multipart/form-data">
-          <el-form-item label="营期名称:">
+        <el-form ref="myForm" enctype="multipart/form-data" :model="trainingForm" :rules="rules">
+          <el-form-item label="营期名称:" prop="title">
             <el-input class="baseInput" v-model="trainingForm.title"></el-input>
           </el-form-item>
-          <el-form-item label="营期天数:">
+          <el-form-item label="营期天数:" prop="days">
             <el-input class="baseInput" v-model="trainingForm.days"></el-input>
           </el-form-item>
-          <el-form-item label="营期封面:">
-            <!-- <el-image :src="fileList[0].url" style="width:300px;height:100px"></el-image> -->
+          <el-form-item label="营期封面:" prop="imgUrl" style="display:flex">
             <el-upload
               action="http://training.test.luojigou.vip/training/file/uploadFile"
               list-type="picture-card"
@@ -24,15 +23,17 @@
               :limit="1"
               :class="{hide:hideUpload}"
               :on-change="handlesmallChange"
+              ref="SingleImg"
             >
             <!--       :before-upload="beforeAvatarUpload"  -->
               <i class="el-icon-plus"></i>
-            </el-upload>`
-            <el-dialog :visible.sync="dialogVisible">
+            </el-upload>
+            <!-- <el-image :src="trainingForm.imgUrl" style="width:146px;height:146px"></el-image> -->
+            <!-- <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="dialogImageUrl" alt />
-            </el-dialog>
+            </el-dialog> -->
           </el-form-item>
-          <el-form-item label="上传图片:">
+          <el-form-item label="上传图片:"  prop="imgListEx">
             <el-upload
               action="http://training.test.luojigou.vip/training/file/uploadFile"
               list-type="picture-card"
@@ -40,15 +41,18 @@
               :on-success="handlerHeadImageSuccess"
               :on-remove="handleHeadImageRemove"
               :on-change="handleChange"
+              ref="manyImg"
             >
               <i class="el-icon-plus"></i>
-            </el-upload>`
-            <el-dialog :visible.sync="dialogVisible">
+            </el-upload>
+            <!-- <el-image  v-for="(item , index) in trainingForm.imgListEx" :key="index" :src="item"></el-image> -->
+            <!-- <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="dialogImageUrl" alt />
-            </el-dialog>
+            </el-dialog> -->
           </el-form-item>
           <el-form-item>
-            <el-button style="width:300px" type="primary" @click="onAddDirll">增加</el-button>
+            <el-button style="width:300px" type="primary" v-if="!id" @click="onAddDirll">增加</el-button>
+            <el-button style="width:300px" type="warning" v-else @click="onEditDirll">修改</el-button>
           </el-form-item>
         </el-form>
       </template>
@@ -57,7 +61,7 @@
 </template>
 
 <script>
-import { addDirll } from '@/API/training/drill.js'
+import { addDirll , getDrillInfo , editDrillInfo} from '@/API/training/drill.js'
 export default {
   name: 'addDrillPage',
   data () {
@@ -72,55 +76,85 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       hideUpload: false,
+      limitCount: 1,
+      rules: {
+        title: [
+          { required: true, message: '请输入营期名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        days: [
+          { required: true, message: '请输入营期天数', trigger: 'blur' },
+          { min: 3, max: 5, message: '在xxx 天 到 xxx 天之内', trigger: 'blur' }
+        ],
+        imgUrl: [
+          { required: true, message: '请选择封面图片', trigger: 'blur' }
+        ],
+        imgListEx: [
+          { type: 'array' , required: true, message: '请选择营期图片', trigger: 'blur' }
+        ]
+      },
+      id: '',
     }
   },
   methods: {
+    // 修改训练营 
+    async onEditDirll () {
+      this.$refs.myForm.validate( async valid => {
+        if ( valid) {
+          try {
+            await editDrillInfo(this.trainingForm)
+            this.$refs.SingleImg.clearFiles()
+            this.$refs.manyImg.clearFiles()
+            this.trainingForm = {}
+            this.$message({ message:'修改成功',type:'success'})
+            } catch (error) {
+            this.$message.error('修改失败')
+            }
+          }
+      })
+
+    },
     //   增加训练营期数
     async onAddDirll () {
-      try {
-         await addDirll(JSON.stringify(this.trainingForm) )
-         this.$message({ message:'增加成功',type:'success'})
-  
-      } catch (error) {
-        this.$message.error('增加失败')
-      }
-      
+      await this.$refs.myForm.validate( async valid => {
+        if (valid) {
+          try {
+            await addDirll(JSON.stringify(this.trainingForm) )
+            this.$refs.SingleImg.clearFiles()
+            this.$refs.manyImg.clearFiles()
+            this.trainingForm = {}
+            this.$message({ message:'增加成功',type:'success'})
+          } catch (error) {
+            this.$message.error('增加失败')
+          }
+        } else {
+          this.$message.error('请正确完整填入表单信息')
+        }
+      })
     },
-    handlesmallChange () {
+    async initTrainingForm () {
+    const { data } = await getDrillInfo(this.id)
+    console.log(data);
+    this.trainingForm = data.data
+    },
+    handlesmallChange (file, fileList) {
       this.hideUpload = fileList.length >= this.limitCount;
     },
     handleImageRemove (file, fileList) {
-      console.log(file, fileList)
-      // this.fileList = fileList
       this.hideUpload = fileList.length >= this.limitCount
+      this.fileList = []
     },
-    async handlerImageSuccess (response, file, fileList) {
-      console.log(response)
+    handlerImageSuccess (response, file, fileList) {
       this.trainingForm.imgUrl = response.data
-      // const imgUrl = response.data
-      //   try {
-      //     const { data } = await uploadImg({ file: imgUrl })
-      //     console.log(data)
-      //   } catch (error) {
-      //   }
     },
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-10);
-
     },
-    async handlerHeadImageSuccess (response, file, fileList) {
-      console.log(response)
+    handlerHeadImageSuccess (response, file, fileList) {
       this.trainingForm.imgListEx.push(response.data)
-      // const imgUrl = response.data
-      //   try {
-      //     const { data } = await uploadImg({ file: imgUrl })
-      //     console.log(data)
-      //   } catch (error) {
-      //   }
     },
     handleHeadImageRemove (file, fileList) {
-      console.log(file, fileList)
-      // this.fileList = fileList
+       this.fileList = []
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpg'
@@ -154,6 +188,8 @@ export default {
           return Promise.reject()
         }
       )
+      console.log(1);
+      
       return isPNG && isJPG && isSize && isLt20M
     }
     // handlePictureCardPreview (file) {
@@ -162,7 +198,12 @@ export default {
     // }
   },
   created () {
+    this.id = this.$route.query.id
     this.trainingForm.title = this.$route.query.title
+    if ( this.id ) {
+        this.initTrainingForm()
+    }
+  
   }
 }
 </script>
@@ -172,7 +213,7 @@ export default {
     width: 300px;
   }
 }
-.hide .el-upload--picture-card {
+/deep/ .hide .el-upload--picture-card {
     display: none;
 }
 </style>

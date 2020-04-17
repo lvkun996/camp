@@ -72,12 +72,28 @@ const routes = [
           {
             path: '/drill',
             name: 'drill',
-            component: () => import('@/views/training/components/drill')
+            component: () => import('@/views/training/components/drill'),
+            props: true
           },
           {
             path: '/addDrill',
             name: 'addDrill',
             component: () => import('@/views/training/components/addDrill')
+          },
+          {
+            path: '/resourceDrill',
+            name: 'resourceDrill',
+            component: () => import('@/views/training/components/resourceDrill')
+          },
+          {
+            path: '/newPeriods',
+            name: 'newPeriods',
+            component: () => import('@/views/training/components/addPeriods.vue')
+          },
+          {
+            path: '/editDrill',
+            name: 'editDrill',
+            component: () => import('@/views/training/components/editDrill.vue')
           }
         ]
       }
