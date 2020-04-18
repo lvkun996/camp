@@ -6,6 +6,7 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/style/index.less'
+import '@/static/iconfont.css'
 
 import moment from 'moment'
 
@@ -14,6 +15,9 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import plugins from '@/components'
+
+import "bootstrap/dist/css/bootstrap.css"
+import "font-awesome/less/font-awesome.less"
 
 Vue.filter('formatDate', function(value) {
   return Moment(value).format('YYYY-MM-DD HH:mm:ss')

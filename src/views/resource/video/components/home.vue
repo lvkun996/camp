@@ -1,6 +1,6 @@
 <template>
     <div class="video_container">
-            <breadcrumb>
+          <breadcrumb>
               <template slot="title">资源管理 </template>
               <template slot="secondTitle"> 视频管理</template>
           </breadcrumb>
@@ -12,9 +12,9 @@
                 <Table :tableStyle="tableStyle" :tableData="videoData">
                     <template slot="videoNumber" >视频数量161条</template>
                     <template slot="header">图文详情</template>
-                    <template slot="resourceBtn" scope="val" >
+                    <!-- <template slot="resourceBtn" scope="val" >
                         <el-tag type="success" @click="goResourceVideo(val)">视频管理</el-tag>
-                    </template>
+                    </template> -->
                     <template slot="editBtn" scope="val" >
                         <el-tag @click="goEditVideo(val)">编辑</el-tag>
                     </template>
@@ -49,10 +49,17 @@ export default {
     }
   },
   methods: {
+    // 编辑视频
+    goEditVideo(val) {
+      this.$router.push({
+        path: '/newVideo',
+        query: {
+          value: val.single
+        }
+      })
+    },
     // 删除视频
     async onDeleteVideo (value) {
-     
-
      try {
        await deleteVideo(value.single.id)
        this.$message({message:'删除成功', type: 'success'})
@@ -71,7 +78,6 @@ export default {
       const res =  data.data.entityList.map( item => {
              item['videoUrl'] = item.videoUrl + '?vframe/jpg/offset/1'
              return item
-             
        })
        this.videoData = res
     }

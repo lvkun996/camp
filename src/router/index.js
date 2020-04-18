@@ -41,9 +41,38 @@ const routes = [
             ]
           },
           {
+            path: '/picture',
+            name: 'pictureHome',
+            component: () => import('@/views/resource/picture'),
+            children: [
+              {
+                path: '/',
+                name: 'picture',
+                component: () => import('@/views/resource/picture/components/home.vue')
+              },
+              {
+                path: '/addOrEditPic',
+                name: 'addOrEditPic',
+                component: () => import('@/views/resource/picture/components/addOrEditPic.vue')
+              }
+            ]
+          },
+          {
             path: '/scene',
             name: 'scene',
-            component: () => import('@/views/resource/scene')
+            component: () => import('@/views/resource/scene'),
+            children: [
+              {
+                path: '/',
+                name: 'sceneFlow',
+                component: () => import('@/views/resource/scene/components/home')
+              },
+              {
+                path: '/addScene',
+                name: 'addScene',
+                component: () => import('@/views/resource/scene/components/addScene.vue')
+              }
+            ]
           },
           {
             path: '/punchCard',

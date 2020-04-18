@@ -41,6 +41,12 @@
                                       <span>视频管理</span>
                                   </template>
                                 </el-menu-item>
+                                <el-menu-item index="/picture">
+                                  <template slot="title">
+                                      <i class="el-icon-picture-outline"></i>
+                                      <span>图片管理</span>
+                                  </template>
+                                </el-menu-item>
                                 <el-menu-item index="/scene">
                                     <template slot="title">
                                         <i class="el-icon-refresh-left"></i>

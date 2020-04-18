@@ -1,5 +1,5 @@
 <template>
-    <div class="sceneHome_container">
+    <div class="pictureHome_container">
         <router-view></router-view>
     </div>
 </template>

@@ -3,18 +3,18 @@
          <breadcrumb>
               <template slot="title">资源管理 </template>
               <template slot="secondTitle"> 视频管理</template>
-              <template slot="thirdlyTitle"> 新增视频</template>
+              <template slot="thirdlyTitle">{{id?'修改视频':'新增视频'}}</template>
           </breadcrumb>
           <Card>
                <template slot="content">
                     <el-form >
                         <el-form-item label="视频名称:">
-                            <el-input v-model="uoloadForm.title" style="width:300px"></el-input>
+                            <el-input v-model="uploadForm.title" style="width:300px"></el-input>
                         </el-form-item>
                 <el-form-item label="视频上传:" >
                 <!-- action必选参数, 上传的地址 -->
                         <el-upload
-                              v-if="!uoloadForm.videoUrl" class="avatar-uploader el-upload--text"
+                              v-if="!uploadForm.videoUrl" class="avatar-uploader el-upload--text"
                               :limit='1'
                                action="http://training.test.luojigou.vip/training/file/uploadFile"
                                :show-file-list="false"
@@ -22,27 +22,31 @@
                                :on-success="handleVideoSuccess" 
                                :before-upload="beforeUploadVideo" 
                                :on-progress="uploadVideoProcess">
-                            <i  v-if="!uoloadForm.videoUrl" class="el-icon-plus avatar-uploader-icon"></i>
+                            <i  v-if="!uploadForm.videoUrl" class="el-icon-plus avatar-uploader-icon"></i>
                         <div class="uploadText"> 点击红色区域上传视频</div>
                         <el-progress v-if="videoFlag == true"  type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
                         <!-- <el-button class="video-btn"slot="trigger" size="small" v-if="isShowUploadVideo"type="primary">选取文件</el-button> -->
-                    </el-upload>
-                    <video v-else :src="uoloadForm.videoUrl" class="avatar video-avatar" controls="controls">您的浏览器不支持视频播放</video> 
+                    </el-upload>   
+                    <video v-else :src="uploadForm.videoUrl" class="avatar video-avatar" controls="controls">您的浏览器不支持视频播放</video> 
+                           
                     <P v-if="isShowUploadVideo"
                        class="text">请保证视频格式正确，且不超过20M</P>
                 </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" style="width:200px;margin-left:100px" @click="onUpload">立即上传</el-button>
+                        <el-button type="danger" style="width:200px;margin-left:100px" @click="uploadForm.videoUrl=''">删除视频</el-button>
+                        <el-button type="primary" v-if="!id" style="width:200px;margin-left:100px" @click="onUpload">立即上传</el-button>
+                        <el-button type="warning" v-else style="width:200px;margin-left:100px" @click="onEditVideo">修改视频</el-button>
                     </el-form-item>
             </el-form>
                </template>
+            
           </Card>
           
     </div>
 </template>
 <script>
 // import { uploadImg } from '@/API/training/drill.js'
-import { addVideo } from '@/API/resource/video.js'
+import { addVideo , getVideoInfo, editVideo} from '@/API/resource/video.js'
 export default {
     name: 'newVideoPage',
     data () {
@@ -51,22 +55,52 @@ export default {
 		    videoUploadPercent:"", //进度条的进度，
             isShowUploadVideo:false ,//显示上传按钮
             showVideoPath: true,
-            uoloadForm: {
-                title: '',
-                videoUrl: ''
-            }
+            uploadForm: {
+                title: null,
+                videoUrl: null
+            },
+            id: ''  // 视频id
         }
     },
     methods: {
+        // 修改视频
+        async onEditVideo () {
+            if (this.uploadForm.title === '' || this.uploadForm.videoUrl === '') {
+                this.$message.error( '请完整填入视频信息' ) 
+                return false
+            }
+            try {
+                await editVideo(this.uploadForm)
+                this.$message({message: '修改成功', type: 'success'})
+                this.uploadForm = {}
+            } catch (error) {
+                this.$message.error('修改失败')
+            }
+        },
+        // 获取视频详情
+        async initVideoInfo () {
+            if (!this.id) {
+                return false
+            }
+            const { data } = await getVideoInfo(this.id)
+            console.log(data)
+            this.uploadForm = data.data
+        },
         // 上传视频
         async onUpload () {
-            try {
-                await addVideo(this.uoloadForm)
-                this.$message({message: '上传成功', type: 'success'})
-                this.uoloadForm.title = '',
-                this.uoloadForm.videoUrl = ''
-            } catch (error) {
-                this.$message('上传失败')
+            
+            if (!this.rules) {
+                this.$message.error( '请完整填入视频信息' )
+                return false
+            } else {
+                try {
+                    await addVideo(this.uploadForm)
+                    this.$message({message: '上传成功', type: 'success'})
+                    this.uploadForm.title = '',
+                    this.uploadForm.videoUrl = ''
+                } catch (error) {
+                    this.$message('上传失败')
+                }
             }
         },
        //上传前回调
@@ -92,9 +126,23 @@ export default {
         async handleVideoSuccess (res, file) {
                 this.videoFlag = false;
                 this.videoUploadPercent = 0;
-                this.uoloadForm.videoUrl = res.data
+                this.uploadForm.videoUrl = res.data
                 this.showVideoPath = false
             },
+        },
+        computed: {
+            rules () {
+              return  Object.values(this.uploadForm).every( item => {
+                   return item !== null && item !== ''
+               })
+            }
+        },
+        created () {
+            if (!this.$route.query.value) {
+                return false
+            }
+            this.id = this.$route.query.value.id
+            this.initVideoInfo()
         }
 }
 </script>
