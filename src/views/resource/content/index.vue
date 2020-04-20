@@ -1,12 +1,12 @@
 <template>
-  <div class="tabsText_container">
-    这是文字
-  </div>
+    <div class="content_container">
+        <router-view />
+    </div>
 </template>
 
 <script>
 export default {
-  name: 'tabsTextPage'
+
 }
 </script>
 <style scoped lang="less">

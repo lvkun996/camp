@@ -47,6 +47,12 @@
                                       <span>图片管理</span>
                                   </template>
                                 </el-menu-item>
+                                <el-menu-item index="/text">
+                                  <template slot="title">
+                                      <i class="el-icon-document-copy"></i>
+                                      <span>内容管理</span>
+                                  </template>
+                                </el-menu-item>
                                 <el-menu-item index="/scene">
                                     <template slot="title">
                                         <i class="el-icon-refresh-left"></i>

@@ -10,7 +10,7 @@
                      <template slot="button">新增图片</template>
                 </Header>
                 <Table :tableStyle="tableStyle" :tableData="pictureData">
-                    <template slot="videoNumber" >视频数量161条</template>
+                    <template slot="videoNumber" >图片数量{{total}}张</template>
                     <template slot="header">图文详情</template>
                     <template slot="editBtn" scope="val" >
                         <el-tag @click="goEditPicture(val)">编辑</el-tag>
@@ -19,6 +19,7 @@
                         <el-tag type="danger" @click="onDeletePicture(val)">删除</el-tag>
                     </template>
                 </Table>
+                <Pagination @currPage="accept" :total="total" style="margin-left:400px"/>
             </template>
         </Card> 
     </div>
@@ -42,11 +43,21 @@ export default {
         label2: '创建时间',
         label4: '操作'
       },
-      pictureData: []
+      pictureData: [],
+        pagintion: {
+          isPage: 1,
+          page: 1
+        },
+        total: ''
      }
  },
 
  methods: {
+    accept (page) {
+      console.log(page);
+      this.pagintion.page = page
+      this.initPictureList()
+    },
     //  删除图片
     async onDeletePicture (val) {
         try {
@@ -68,13 +79,10 @@ export default {
     },
     //  获取图片列表
     async initPictureList () {
-      let params = {
-          isPage: 1,
-          page: 1
-      }
-      const { data } = await getPictureList(params)
+      const { data } = await getPictureList(this.pagintion)
       console.log(data);
       this.pictureData = data.data.entityList
+      this.total = data.data.total
     }
  },
  components: {

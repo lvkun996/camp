@@ -5,16 +5,26 @@
             <el-table style="width:100%" :data="tableData" >
                 <el-table-column :label="tableStyle.label1" class="table1">
                       <template slot-scope="scope">
-                        <el-image :src="scope.row.imgUrl?scope.row.imgUrl:scope.row.videoUrl" alt=""  style="width:82px;height:60px" />
+                        <el-image v-if="!scope.row.content" :src="scope.row.imgUrl?scope.row.imgUrl:scope.row.videoUrl" alt=""  style="width:82px;height:60px" />
+                        <span style="margin-left: 10px">{{ scope.row.title }}</span>
+                      </template>
+                      <template slot-scope="scope">
                         <span style="margin-left: 10px">{{ scope.row.title }}</span>
                       </template>
                 </el-table-column>
                 <el-table-column :label="tableStyle.label2">
                       <template slot-scope="scope">
-                        {{scope.row.days?scope.row.days:scope.row.createTime}}
+                        {{scope.row.days?scope.row.days:scope.row.content}}
+                      </template>
+                      <template slot-scope="scope">
+                        {{scope.row.teacherName}}
                       </template>
                 </el-table-column>
-                <el-table-column :label="tableStyle.label3"> </el-table-column>
+                <el-table-column :label="tableStyle.label3">
+                      <template slot-scope="scope">
+                        {{scope.row.createTime}}
+                      </template>
+                </el-table-column>
                 <el-table-column :label="tableStyle.label4"> 
                   <template slot-scope="scope">
                       <div style="margin-right:10px"><slot name="resourceBtn" :single="scope.row"></slot></div>

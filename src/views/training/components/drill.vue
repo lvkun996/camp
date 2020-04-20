@@ -10,7 +10,7 @@
                      <template slot="button">新增训练营</template>
                 </Header>
                 <Table :tableStyle="tableStyle" :tableData="drillData">
-                    <template slot="videoNumber" >视频数量161条</template>
+                    <template slot="videoNumber" >训练营数量{{total}}</template>
                     <template slot="header">图文详情</template>
                     <el-button slot="editBtn">增加</el-button>
                     <template slot="resourceBtn" scope="val" >
@@ -23,6 +23,7 @@
                         <el-tag type="danger" @click="onDeleteDrill(val)">删除</el-tag>
                     </template>
                 </Table>
+                 <Pagination @currPage="accept" :total="total" style="margin-left:400px"/>
             </template>
         </Card>
     </div>
@@ -47,10 +48,20 @@ export default {
         label3: '报名人数',
         label4: '操作'
       },
-      drillData: []
+      drillData: [],
+      pagintion: {
+        isPage: 1,
+        page: 1
+      },
+      total: ''
     }
   },
   methods: {
+      accept (page) {
+        console.log(page);
+        this.pagintion.page = page
+        this.onGetDirll()
+      },
     // 去编辑训练营
     goEditDrill (value) {
       this.$router.push({
@@ -81,8 +92,9 @@ export default {
     },
     // 获取训练营列表
     async onGetDirll () {
-    const { data } =  await getDirll(1)
+    const { data } =  await getDirll(this.pagintion.page)
     console.log(data);
+    this.total = data.data.total
     this.drillData = data.data.entityList
     }
   },

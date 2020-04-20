@@ -3,9 +3,9 @@
         <template>
             <div class="flex">
                 <div class="along"  v-for="item in ground" :key="item.id">
-                      <el-image :src="item.imgUrl" style="width:100px;height:100px" class="img"   @click="onImg(item)"/>
-                      <span class="icon iconfont icon-querenduigougouhao" :style="{display: id === item.id?'block':res?'none':'0'}"></span>
-                      <!-- <span class="icon iconfont icon-querenduigougouhao" :style="{display: res?'block':'none'}"></span> -->
+                      <el-image :src="item.imgUrl?item.imgUrl:item.videoUrl" style="width:100px;height:100px" class="img"   @click="onImg(item)"/>
+                      <span  v-if="single"  class="icon iconfont icon-querenduigougouhao" :style="{display: id === item.id?'block':res?'none':'0'}"></span>
+                      <span  v-else class="icon iconfont icon-querenduigougouhao" :style="{display:  id === item.id?'block':'none'}"></span>
                 </div>
             </div>
         </template>
@@ -19,30 +19,41 @@ export default {
         return {
             nikeShow: false,
             id: '',
-            transmitData: [],
-            res : true
+            transmitData: '',
+            res : true,
+
         }
     },
     props: {
         ground: {
             type: Array,
             requied: true
+        },
+        single: {
+            type: Boolean,
+            requied: true
         }
     },
     methods: {
         onImg (item) {
+        console.log(item)
+
+        if ( this.single ) {
+
+        }
+          item.status = true
           this.id = item.id 
           this.res = false
-          this.transmitData.push(item)
+          this.transmitData = item
+        //   const res = [... new Set(this.transmitData)]
+        //     console.log(res);
+          this.$emit('transmitData', this.transmitData)
         }
     },
     beforeDestroy () {
-        
-        
         this.res = false
     },
     created () {
-        console.log(1);
     }
 }
 </script>

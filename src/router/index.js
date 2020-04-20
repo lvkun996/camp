@@ -58,6 +58,23 @@ const routes = [
             ]
           },
           {
+            path: '/text',
+            name: 'textHome',
+            component: () => import('@/views/resource/content'),
+            children: [
+              {
+                path: '/',
+                name: 'text',
+                component: () => import('@/views/resource/content/components/home.vue')
+              },
+              {
+                path: '/addOrEditContent',
+                name: 'addOrEditContent',
+                component: () => import('@/views/resource/content/components/addOrEditContent.vue')
+              }
+            ]
+          },
+          {
             path: '/scene',
             name: 'scene',
             component: () => import('@/views/resource/scene'),
@@ -71,6 +88,11 @@ const routes = [
                 path: '/addScene',
                 name: 'addScene',
                 component: () => import('@/views/resource/scene/components/addScene.vue')
+              },
+              {
+                path: '/addClass',
+                name: 'addClass',
+                component: () => import('@/views/resource/scene/components/addClass.vue')
               }
             ]
           },

@@ -10,7 +10,7 @@
                      <template slot="button">新增视频</template>
                 </Header>
                 <Table :tableStyle="tableStyle" :tableData="videoData">
-                    <template slot="videoNumber" >视频数量161条</template>
+                    <template slot="videoNumber" >视频数量{{total}}条</template>
                     <template slot="header">图文详情</template>
                     <!-- <template slot="resourceBtn" scope="val" >
                         <el-tag type="success" @click="goResourceVideo(val)">视频管理</el-tag>
@@ -22,6 +22,7 @@
                         <el-tag type="danger" @click="onDeleteVideo(val)">删除</el-tag>
                     </template>
                 </Table>
+                  <Pagination @currPage="accept" :total="total"/>
             </template>
         </Card>
     </div>
@@ -42,13 +43,24 @@ export default {
     return {
       tableStyle: { // 动态控制table 得 leble
         label1: '视屏列表',
-        label2: '创建时间',
+        label3: '创建时间',
         label4: '操作'
       },
       videoData:  [],
+
+      pagintion: {
+        isPage: 1,
+        page: 1
+      },
+      total: 0
     }
   },
   methods: {
+    accept (page) {
+      console.log(page);
+      this.pagintion.page = page
+      this.onGetVideoList()
+    },
     // 编辑视频
     goEditVideo(val) {
       this.$router.push({
@@ -70,15 +82,14 @@ export default {
     },
     // 获取视频列表
     async onGetVideoList () {
-        let params = {
-            isPage: 1,
-            page: 1,
-        }
-       const { data } =  await getVideoList( params)
+       const { data } =  await getVideoList(this.pagintion)
+       console.log(data);
+       
       const res =  data.data.entityList.map( item => {
              item['videoUrl'] = item.videoUrl + '?vframe/jpg/offset/1'
              return item
        })
+       this.total = data.data.total
        this.videoData = res
     }
   },
