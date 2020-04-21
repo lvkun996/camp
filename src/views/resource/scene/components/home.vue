@@ -7,8 +7,7 @@
         <Card>
             <template slot="content">
                 <Header>
-                     <template slot="button">新增情景</template>
-                   
+                     <template slot="button">新增课程</template>
                 </Header>
                   <el-button @click="$router.push({path: '/addScene'})">click me</el-button>
                 <Table :tableStyle="tableStyle" :tableData="videoData">
@@ -18,7 +17,7 @@
                         <el-tag type="success" @click="goResour ceVideo(val)">视频管理</el-tag>
                     </template> -->
                     <template slot="resourceBtn" scope="val">
-                        <el-tag type="success" @click="lookClassInfo(val)">查看详情</el-tag>
+                        <el-tag type="success" @click="lookClassInfo(val)">查看课程</el-tag>
                     </template>
                     <template slot="editBtn" scope="val" >
                         <el-tag @click="$router.push({path: '/addClass',query: {id: val.single.id}})">编辑</el-tag>
@@ -27,7 +26,7 @@
                         <el-tag type="danger" @click="onDeleteClass(val)">删除</el-tag>
                     </template>
                 </Table>
-                <Pagination @currPage="accept"  style="margin-left:450px" :total="total"/>
+                <Pagination @currPage="accept"  :total="total"/>
             </template>
         </Card>
         <el-dialog
@@ -76,7 +75,7 @@ export default {
     return {
       tableStyle: { // 动态控制table 得 leble
         label1: '课时',
-        label2: '老师名称',
+
         label3: '创建时间',
         label4: '操作'
       },
@@ -89,8 +88,14 @@ export default {
   methods: {
     // 查看详情
     lookClassInfo (val) {
-      this.dialogVisible = true
-      this.singleClassInfo = val.single
+      // this.dialogVisible = true
+      // this.singleClassInfo = val.single
+      this.$router.push({
+        path: '/detailInfo',
+        query: {
+          id: val.single.id
+        }
+      })
     },
     // 删除课程
     async onDeleteClass (val) {
@@ -110,11 +115,7 @@ export default {
     },
     // 初始化列表
     async initCourseList () {
-      let params = {
-        activityItemId: 1,
-        isPage: 1 
-      }
-      const { data } =  await getCourseList(params)
+      const { data } =  await getCourseList({page: 1})
       console.log(data);
       this.total = data.data.total
       this.videoData = data.data.entityList

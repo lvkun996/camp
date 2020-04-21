@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'http://training.test.luojigou.vip/'
+  baseURL: 'http://training.test.luojigou.vip/',
+  timeout: 3000
 })
 
 export const createAPI = (url, method, data) => {

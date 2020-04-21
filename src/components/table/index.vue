@@ -6,19 +6,22 @@
                 <el-table-column :label="tableStyle.label1" class="table1">
                       <template slot-scope="scope">
                         <el-image v-if="!scope.row.content" :src="scope.row.imgUrl?scope.row.imgUrl:scope.row.videoUrl" alt=""  style="width:82px;height:60px" />
-                        <span style="margin-left: 10px">{{ scope.row.title }}</span>
+                        <span style="margin-left: 10px">{{ scope.row.title}}</span>
                       </template>
                       <template slot-scope="scope">
                         <span style="margin-left: 10px">{{ scope.row.title }}</span>
                       </template>
+                      <!-- <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.content }}</span>
+                      </template> -->
                 </el-table-column>
                 <el-table-column :label="tableStyle.label2">
                       <template slot-scope="scope">
                         {{scope.row.days?scope.row.days:scope.row.content}}
                       </template>
-                      <template slot-scope="scope">
+                      <!-- <template  slot-scope="scope">
                         {{scope.row.teacherName}}
-                      </template>
+                      </template> -->
                 </el-table-column>
                 <el-table-column :label="tableStyle.label3">
                       <template slot-scope="scope">

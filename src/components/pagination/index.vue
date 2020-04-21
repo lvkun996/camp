@@ -14,7 +14,6 @@ export default {
     name: 'pagePage',
     props: {
         total: {
-            type: Number,
             required: true
         }
     },
@@ -26,5 +25,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
-
+.el-pagination{
+    margin-left: 550px;
+}
 </style>

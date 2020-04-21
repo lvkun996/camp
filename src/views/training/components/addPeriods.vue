@@ -11,17 +11,17 @@
             <el-steps :active="active" simple process-status="sucess">
                 <el-step title="1 设置打卡信息" icon="el-icon-setting"></el-step>
                 <el-step title="2 添加主题" icon="el-icon-circle-plus-outline"></el-step>
-                <el-step title="3 添加助教" icon="el-icon-user"></el-step>
+                <!-- <el-step title="3 添加助教" icon="el-icon-user"></el-step> -->
             </el-steps>
             <template v-if="active === 0? true: false">
-                 <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="营期名称:">
+                 <el-form ref="form" :rules="rules" :model="form" label-width="80px">
+                    <el-form-item label="营期名称:" prop="title" label-width="180px">
                         <el-input v-model="form.title"></el-input>
                     </el-form-item>
-                    <el-form-item label="价格:">
+                    <el-form-item label="价格:" prop="price" label-width="180px">
                         <el-input v-model="form.price" style="width:100px;margin-right:10px"></el-input>元
                     </el-form-item>
-                    <el-form-item label="时间选择:">
+                    <el-form-item label="时间选择:" label-width="180px" prop="startTime">
                         <el-date-picker
                         v-model="time"
                         @change="onSaveTime"
@@ -38,7 +38,7 @@
             <template v-else-if="active === 1? true: false">
                 <DrillClass />
             </template>
-              <el-button type="primary" class="addBtn" @click="active --">上一步</el-button>
+              <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --">上一步</el-button>
               <el-button type="primary" class="addBtn" @click="onAddDrillPeridos">下一步</el-button>
             </template> 
         </Card>
@@ -58,6 +58,11 @@ export default {
               endTime: '',
               activityId:'',
           },
+          rules: {
+              title: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+              price: [{ required: true, message: '请输入活动价格', trigger: 'blur' }],
+              startTime: [{ required: true, message: '请输入活动开始时间', trigger: 'blur' }]
+          },
           time: null,
           active: 0
         }
@@ -65,8 +70,15 @@ export default {
     methods: {
         // 增加训练营营期
         async onAddDrillPeridos () {
-            this.active++
-            if (this.active > 2) this.active = 0
+           
+            this.$refs.form.validate( valid => {
+                if ( valid ) {
+                    this.active++
+                    if (this.active > 2) this.active = 0
+                }
+            })
+
+
         //    try {
         //         await addDrillPeriods(this.form)
         //         this.$message({ message: '新增成功', type: 'success'})
@@ -96,6 +108,7 @@ export default {
 }
 .addBtn{
     width: 100px;
+    margin-top: 50px;
 }
 .el-steps{
     margin-bottom: 20px;

@@ -10,9 +10,16 @@
                   <template  slot="button">新增打卡</template>
                   <!-- <template slot="button"><el-button @click="onGoNew" type="primary"></el-button></template> -->
                 </Header>
-                <Table :tableStyle="tableStyle">
+                <Table :tableStyle="tableStyle" :tableData="cardData">
                     <template slot="videoNumber" >视频数量161条</template>
                     <template slot="header">图文详情</template>
+
+                    <template slot="editBtn" scope="val" >
+                        <el-tag @click="goEditCard(val)">编辑</el-tag>
+                    </template>
+                    <template slot="deleteBtn" scope="val" >
+                        <el-tag type="danger" @click="onDeleteCardTask(val)">删除</el-tag>
+                    </template>
                 </Table>
             </template>
         </Card>
@@ -22,17 +29,23 @@
 <script>
 import Header from '@/components/header'
 import Table from '@/components/table'
+
+import { punshCardTaskList , deletePunchCardTask} from '@/API/resource/punchCardTask.js'
 export default {
   name: 'punchCardPage',
   data () {
     return {
       tableStyle: { // 动态控制table 得 leble
-        label1: '视屏列表',
-        label2: '订阅量',
-        label3: '内容',
+        label2: '内容',
+        label3: '创建时间',
         label4: '操作'
-      }
-
+      },
+      pagintion: {
+           isPage: 1,
+           page: 1,
+           pageSize: ''
+      },
+      cardData: []
     }
   },
   provide () {
@@ -41,9 +54,35 @@ export default {
     }
   },
   methods: {
+    // 跳转到编辑页
+    goEditCard (val) {
+      this.$router.push( {
+        path: '/newPunchCard',
+        query: {
+          id: val.single.id
+        }
+      })
+    },
+    // 删除打卡接口
+    async onDeleteCardTask (val) {
+      try {
+        await deletePunchCardTask(val.single.id)
+        this.$message({message:'删除成功', type: 'success'})
+          this.initPunchCardList()
+      } catch (error) {
+        this.$message.error('删除失败')
+      }
+    },
+    // 初始化打卡
+    async initPunchCardList () {
+        const { data } = await punshCardTaskList(this.pagintion)
+        console.log(data);
+        this.total = data.data.total
+        this.cardData = data.data.entityList
+    }
   },
   created () {
-
+    this.initPunchCardList()
   },
   components: {
     Header,

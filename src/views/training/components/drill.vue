@@ -23,7 +23,7 @@
                         <el-tag type="danger" @click="onDeleteDrill(val)">删除</el-tag>
                     </template>
                 </Table>
-                 <Pagination @currPage="accept" :total="total" style="margin-left:400px"/>
+                 <Pagination @currPage="accept" :total="total"/>
             </template>
         </Card>
     </div>
@@ -53,7 +53,7 @@ export default {
         isPage: 1,
         page: 1
       },
-      total: ''
+      total: 0
     }
   },
   methods: {

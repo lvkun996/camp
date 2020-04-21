@@ -18,7 +18,7 @@
                 </el-table>
                 <draggable v-model="receptionData" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
                     <transition-group type="transition" :name="'flip-list'">
-                        <li class="list-group-item" v-for="(element,index) in receptionData" :key="element.id">
+                        <li class="list-group-item" v-for="(element,index) in receptionData" :key="index">
                             <el-switch
                                 v-model="element.status"
                                 active-color="#13ce66"
@@ -28,8 +28,9 @@
                                 :key="element.id">
                             </el-switch>
                             <!-- <i :class="element.fixed? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.fixed=! element.fixed" aria-hidden="true"></i> -->
-                            <el-image  :src="element.imgUrl?element.imgUrl:element.videoUrl" style="width:50px;margin-left:300px"></el-image>
-                            <span style="margin-left:10px">{{element.title}}</span>
+                            <el-image  v-if="!element.content" :src="element.imgUrl?element.imgUrl:element.videoUrl" style="width:50px;margin-left:400px"></el-image>
+                            <span v-if="!element.content"  style="margin-left:10px">{{element.title}}</span>
+                            <span v-if="element.content" style="width:50px;margin-left:400px">{{element.title}}</span>
                             <el-tag type="danger"  class="tag" @click="deleteScene(index)">删除</el-tag>
                         </li>
                     </transition-group>
@@ -39,9 +40,9 @@
         </Card>
         <el-dialog :visible.sync="dialogVisible" width="30%">
             <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-                <el-tab-pane label="视频" name="0"><Video  @middleData="reception"  /></el-tab-pane>
+                <el-tab-pane label="视频" name="0"><Video   :key="res" @middleData="reception"  /></el-tab-pane>
                 <el-tab-pane label="图片" name="1"><Picutrue  :key="res" @middleData="reception" /></el-tab-pane>
-                <el-tab-pane label="文字" name="2"><Character/></el-tab-pane>
+                <el-tab-pane label="文字" name="2"><Character :key="res" @deleteAll="deleteAll" @deleteRow="deleteRow" @middleData="reception"/></el-tab-pane>
             </el-tabs>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -68,6 +69,7 @@ export default {
             editable: true,
             res: 1,
             switchValue:false,
+            deleteTextAll: []
         }
     },
     methods: {
@@ -124,9 +126,49 @@ export default {
               (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
           );
         },
+        deleteAll (value , flag) {
+            console.log(flag);
+            if ( flag ) {
+
+                  console.log(value);
+                  
+                this.receptionData.forEach( (item,index) => {
+                value.forEach( ( element,i) => {
+                    if (item.id === element.id) {
+                      
+                        
+                        this.$delete(this.receptionData, index)
+                    }
+                })
+               
+                })
+            }
+
+        },
+        deleteRow (value) {
+            this.receptionData.forEach( (item,index) => {
+                if (item.id === value.id) {
+                    this.$delete(this.receptionData, index)
+                }
+            })
+        },
         reception (value) {
-            console.log(value);
-            this.receptionData.push(value)
+            // if ( value.content ) {
+            //     let flag = false
+            //     this.receptionData.forEach( (item,index) => {
+            //         if (item.id === value.id) {
+            //             flag = true
+            //             this.$delete(this.receptionData, index)
+            //         }
+            //     })
+            //     if ( !flag ) {
+            //         this.receptionData.push(value)
+            //     }
+            // } else {
+            //     this.receptionData.push(value)
+            // }
+             this.receptionData.push(value)
+            
         },
         handleClick (value) {
             // console.log(value);
@@ -170,6 +212,6 @@ export default {
 }
 .tag{
     position: absolute;
-    left: 900px;
+    left: 1100px;
 }
 </style>

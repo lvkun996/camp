@@ -93,6 +93,11 @@ const routes = [
                 path: '/addClass',
                 name: 'addClass',
                 component: () => import('@/views/resource/scene/components/addClass.vue')
+              },
+              {
+                path: '/detailInfo',
+                name: 'detailInfo',
+                component: () => import('@/views/resource/scene/components/detailInfo.vue')
               }
             ]
           },

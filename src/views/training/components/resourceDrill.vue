@@ -14,7 +14,7 @@
                         </div>
                         <div class="drillBottom">
                             <div class="drillNum" >
-                                营期数：{{1}}
+                                营期数：{{total}}
                             </div>
                             <div class="applyPeople">
                                 报名人数：{{0}}
@@ -36,7 +36,7 @@
                 </div>
                 <div class="tabel">
                     <div class="tableText">
-                        营期列表(1条)
+                        营期列表({{total}}条)
                     </div>
                         <el-table :data="resourceData"  style="width: 100%">
                             <el-table-column label="营期名称"  class="table1">
@@ -65,11 +65,6 @@
                             </template>
                             </el-table-column>
                         </el-table>
-                    <pre>
-                        {{
-                            resourceData.id
-                        }}
-                    </pre>
                 </div>
             </template>
          </Card>
@@ -86,7 +81,8 @@ export default {
         initPeriods: {
             id: null,
             page: 1,
-        }
+        },
+        total: 0
     }
   },
   methods : {
@@ -97,17 +93,18 @@ export default {
     const { data } = await  getDrillPeriods(this.initPeriods)
     console.log(data)
     this.resourceData = data.data.entityList
+    this.total = data.data.total
     }
   },
   components: {
   },
   created () {
     console.log(this.$route);
-    
-    this.initPeriods.id = this.$route.query.id
+    if (this.$route.query.id  ) {
+        this.initPeriods.id = this.$route.query.id
+        this.initGetDrillPeriods()
+    }
 
-    
-    this.initGetDrillPeriods()
   }
 }
 </script>

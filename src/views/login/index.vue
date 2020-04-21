@@ -29,9 +29,6 @@
 
 <script>
 
-// import { getUserInfo } from '@/API/login'
-
-// import { setItem } from '@/utils/storeage.js'
 
 export default {
   name: 'loginPage',
@@ -53,36 +50,9 @@ export default {
   },
   methods: {
 
-    async userRegister () {
+     userRegister () {
       this.$router.push({ path: '/home' })
     }
-
-    // async userRegister () {
-    //   const loginMessage = await this.$refs.myForm.validate()
-    //   if (loginMessage) {
-    //     try {
-    //       const { data } = await getUserInfo(this.user)
-    //       console.log(data)
-    //       if (data.meta.status === 400) {
-    //         this.$message.error(`${data.meta.msg}`)
-    //         return
-    //       }
-    //       this.$message.success('登录成功')
-    //       console.log(data.data.token)
-
-    //       setItem('token', data.data.token)
-    //       console.log(1)
-
-    //       this.$router.push('/home')
-    //     } catch (error) {
-    //       this.$message.error('操作失败')
-    //     }
-    //   }
-    // },
-    // // 重置表单
-    // resetForm () {
-    //   this.$refs.myForm.resetFields()
-    // }
   }
 }
 </script>

@@ -19,7 +19,7 @@
                         <el-tag type="danger" @click="onDeletePicture(val)">删除</el-tag>
                     </template>
                 </Table>
-                <Pagination @currPage="accept" :total="total" style="margin-left:400px"/>
+                <Pagination @currPage="accept" :total="total" />
             </template>
         </Card> 
     </div>
@@ -40,7 +40,7 @@ export default {
      return {
         tableStyle: { // 动态控制table 得 leble
         label1: '图片列表',
-        label2: '创建时间',
+        label3: '创建时间',
         label4: '操作'
       },
       pictureData: [],
