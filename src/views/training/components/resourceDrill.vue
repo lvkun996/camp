@@ -60,7 +60,7 @@
                             </el-table-column>
                             <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-tag @click="handleEdit(scope.$index, scope.row)" style="margin-right:10px">编辑</el-tag>
+                                <el-tag @click="goAddPeriodsPage(scope.row)" style="margin-right:10px">编辑</el-tag>
                                 <el-tag type="danger" @click="onDeletePeriods(scope.row)">删除</el-tag>
                             </template>
                             </el-table-column>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { getDrillPeriods , deleteDrillPeriods} from '@/API/training/drill.js'
+import { getDrillPeriods , deleteDrillPeriods, editDrillPeriods} from '@/API/training/drill.js'
 export default {
   name: 'resoureDirllPage',
   data () {
@@ -91,6 +91,17 @@ export default {
       this.pagintion.page = page
       this.initGetDrillPeriods()
     },
+    // 跳转到编辑营期页面
+    goAddPeriodsPage (value) {
+        console.log(value);
+        this.$router.push({
+            path: '/newPeriods',
+            query: {
+                id: this.initPeriods.id,
+                editId: value.id
+            }
+        })
+    },
     //   删除训练营营期
     async onDeletePeriods (val) {
         try {
@@ -104,6 +115,8 @@ export default {
     //   获取营期
     async initGetDrillPeriods () {
     const { data } = await  getDrillPeriods(this.initPeriods)
+    console.log(data);
+    
     this.resourceData = data.data.entityList
     this.total = data.data.total
     }
@@ -116,7 +129,6 @@ export default {
         this.initPeriods.id = this.$route.query.id
         this.initGetDrillPeriods()
     }
-
   }
 }
 </script>

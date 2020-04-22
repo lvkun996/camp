@@ -11,7 +11,7 @@
                 <el-aside :width="collapse?'64px':'200px'" >
                      <div class="left-box">
                          <div class="title" :style ="{'fontSize':collapse?'12px':'20px'}">
-                           {{!collapse?'中德智慧网校':'中德'}}
+                           {{!collapse?'情景课程平台':'情景流程'}}
                          </div>
                      </div>
                     <div class="flex_box" @click="collapse = !collapse">

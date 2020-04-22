@@ -39,23 +39,20 @@
                             end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item>
+                  <!-- <el-form-item>
                         <el-tag style="margin-left:50px" @click="onAddDrillPeridos">确定营期</el-tag>
-                    </el-form-item>
+                    </el-form-item>   -->
                 </el-form>
             </template>
             <template v-else-if="active === 1? true: false">
                 <DrillClass :title="form.title"/>
             </template>
+            <!-- -->
               <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --" v-if="active === 0?false: true">上一步</el-button>
-              <el-button type="primary" class="addBtn"  style="margin-left:500px" @click="active ++" v-if="active === 1?false: true">下一步</el-button>
+              <el-button type="primary" class="addBtn"  style="margin-left:500px" @click="onAddDrillPeridos"> {{editId?'编辑去往下一步':'下一步'}} </el-button>
             </template> 
         </Card>
-        <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-        >
+        <el-dialog  title="提示"  :visible.sync="dialogVisible" width="30%"  >
         <Picture @middleData="reception" :key="componentKey"/>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
@@ -65,7 +62,7 @@
     </div>
 </template>
 <script>
-import { addDrillPeriods } from '@/API/training/drill.js'
+import { addDrillPeriods , getPeriodsInfo ,editDrillPeriods} from '@/API/training/drill.js'
 import DrillClass from './periods/drillClass'
 import Picture from '@/views/resource/scene/components/tabs/picture.vue'
 export default {
@@ -91,10 +88,23 @@ export default {
           time: null,
           active: 0,
           dialogVisible: false,
-          componentKey: 0
+          componentKey: 0,
+          editId: ''
         }
     },
     methods: {
+        async initPeriodsInfo () {
+           const { data } =  await getPeriodsInfo(this.editId)
+
+           console.log(data);
+           this.form.title =  data.data.title
+           this.form.startTime =  data.data.startTime
+           this.form.price =  data.data.price
+           this.form.imgUrl =  data.data.imgUrl
+           this.form.previousPrice =  data.data.previousPrice
+           this.form.endTime =  data.data.endTime
+        },
+        
         // 选择图片
         onSeleteImg () {
             if (!this.form.imgUrl) {
@@ -114,14 +124,30 @@ export default {
            
             this.$refs.form.validate( async valid => {
                 if ( valid ) {
-                    try {
-                       await addDrillPeriods(this.form)
-                       this.$message({ message: '新增成功', type: 'success'})
-                       this.form = {}
-                       this.time = null
-                    } catch (error) {
-                        this.$message.error( '新增失败' )  
-                    } 
+                    if ( !this.editId ) {
+                        try {
+                            const { data } = await addDrillPeriods(this.form)
+                            console.log(data);
+
+                            this.$message({ message: '新增成功', type: 'success'})
+                            this.form = {}
+                            this.time = null
+                            this.active ++
+                                window.sessionStorage.setItem('id', data.data.id)
+                            } catch (error) {
+                                this.$message.error( '新增失败' )  
+                        } 
+                    } else {
+
+                        this.form.id = this.editId
+                       const { data } = await editDrillPeriods(this.form)
+                       this.active ++
+                        window.sessionStorage.setItem('periodsId', this.editId)
+                       console.log(data);
+                       
+                    }
+           
+                
                 }
             })
         },
@@ -136,7 +162,18 @@ export default {
         Picture
     },
     created () {
+        console.log(this.$route.query);
+        
         this.form.activityId = this.$route.query.id
+        //  console.log(this.$route.query.editId);
+         
+        if ( this.$route.query.editId ) {
+          
+            this.form.activityId = this.$route.query.id
+            this.editId = this.$route.query.editId
+           this.initPeriodsInfo()
+        }
+
     }
 }
 </script>
@@ -145,7 +182,7 @@ export default {
     width: 300px;
 }
 .addBtn{
-    width: 100px;
+    width: 200px;
     margin-top: 50px;
 }
 .el-steps{

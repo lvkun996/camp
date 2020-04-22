@@ -29,3 +29,9 @@ export const editDrillInfo = params => createAPI(`/admin/activity/update`, 'PUT'
 
 // 给训练营期数添加课程和打卡
 export const addClassAndPunch = params => createAPI('/admin/activityItem', 'POST', params)
+
+// 根据id修改营期
+export const editDrillPeriods = params => createAPI('/admin/activity/updateItem', 'PUT', params)
+
+// 根据训练营营期id获取营期
+export const getPeriodsInfo = params => createAPI(`/admin/activity/getItemById/${params}`)
