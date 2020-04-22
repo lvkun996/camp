@@ -152,6 +152,19 @@ const routes = [
             component: () => import('@/views/training/components/editDrill.vue')
           }
         ]
+      },
+      {
+        path: '/class',
+        name: 'class',
+        // component: () => import('@/views/class'),
+        children: [
+          {
+            path: '/list',
+            name: 'ClassList',
+            component: () => import('@/views/class/list.vue'),
+            props: true
+          },
+        ]
       }
     ]
   }
