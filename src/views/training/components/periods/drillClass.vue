@@ -2,7 +2,7 @@
     <div class="drillClass_container">
         <div class="ImGreens" v-for="(item, index) in FLAGDAY" :key="index">
             <template >
-                <el-input  style="width:200px" v-model="studyTask.title" placeholder="添加标题"></el-input>
+                <el-input  style="width:200px" v-model="item.title" placeholder="添加标题"></el-input>
                 <el-date-picker
                 v-model="time"
                 style="margin-left:20px"
@@ -131,7 +131,7 @@ export default {
                 startTime: ''
             },
             time: null,
-            FLAGDAY: ['1'],
+            FLAGDAY: [],
             singleDataNum: 0
         }
     },
@@ -174,7 +174,9 @@ export default {
         // 新增一节
         newClass () {
             // this.addClass = true
-            this.FLAGDAY.push(this.studyTask)
+            this.FLAGDAY.push({
+
+            })
         },
         onDeleteStudy (val,index) {
             this.singleData = this.singleData.filter( item => {
