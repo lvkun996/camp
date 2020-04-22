@@ -5,12 +5,11 @@
               <template slot="secondTitle"> 训练营</template>
               <template slot="thirdlyTitle">新增营期</template>
          </breadcrumb>
-
         <Card>
             <template slot="content">
             <el-steps :active="active" simple process-status="sucess">
-                <el-step title="1 设置打卡信息" icon="el-icon-setting"></el-step>
-                <el-step title="2 添加主题" icon="el-icon-circle-plus-outline"></el-step>
+                <el-step title="1 设置营期" icon="el-icon-setting"></el-step>
+                <el-step title="2 添加情景流程" icon="el-icon-circle-plus-outline"></el-step>
                 <!-- <el-step title="3 添加助教" icon="el-icon-user"></el-step> -->
             </el-steps>
             <template v-if="active === 0? true: false">
@@ -41,15 +40,15 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item>
-                        <el-tag style="margin-left:50px">确定营期</el-tag>
+                        <el-tag style="margin-left:50px" @click="onAddDrillPeridos">确定营期</el-tag>
                     </el-form-item>
                 </el-form>
             </template>
             <template v-else-if="active === 1? true: false">
                 <DrillClass :title="form.title"/>
             </template>
-              <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --">上一步</el-button>
-              <el-button type="primary" class="addBtn" @click="onAddDrillPeridos">下一步</el-button>
+              <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --" v-if="active === 0?false: true">上一步</el-button>
+              <el-button type="primary" class="addBtn"  style="margin-left:500px" @click="active ++" v-if="active === 1?false: true">下一步</el-button>
             </template> 
         </Card>
         <el-dialog
@@ -113,22 +112,18 @@ export default {
         // 增加训练营营期
         async onAddDrillPeridos () {
            
-            this.$refs.form.validate( valid => {
+            this.$refs.form.validate( async valid => {
                 if ( valid ) {
-                    this.active++
-                    if (this.active > 2) this.active = 0
+                    try {
+                       await addDrillPeriods(this.form)
+                       this.$message({ message: '新增成功', type: 'success'})
+                       this.form = {}
+                       this.time = null
+                    } catch (error) {
+                        this.$message.error( '新增失败' )  
+                    } 
                 }
             })
-
-
-        //    try {
-        //         await addDrillPeriods(this.form)
-        //         this.$message({ message: '新增成功', type: 'success'})
-        //         this.form = {}
-        //         this.time = null
-        //    } catch (error) {
-        //         this.$message.error( '新增失败' )  
-        //    }
         },
         // 日期格式转换
         onSaveTime () {
