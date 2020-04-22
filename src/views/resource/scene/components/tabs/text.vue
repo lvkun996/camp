@@ -1,13 +1,15 @@
 <template>
   <div class="tabsText_container">
-    <el-table  ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"
+    <el-table  ref="multipleTable" :data="tableData" 
+    tooltip-effect="dark" style="width: 100%"
     @select="handleSingle" @select-all="handleAll"
     >
-    <el-table-column  type="selection" width="55"></el-table-column>
-    <el-table-column  label="名称" width="120"> <template slot-scope="scope">{{ scope.row.title }}</template></el-table-column>
-    <el-table-column  label="内容" width="120"> <template slot-scope="scope">{{ scope.row.content }}</template> </el-table-column>
-    <el-table-column  label="创建时间" width="160"> <template slot-scope="scope">{{ scope.row.createTime }}</template> </el-table-column>
-  </el-table>
+        <el-table-column  type="selection" width="55"></el-table-column>
+        <el-table-column  label="名称" width="120"> <template slot-scope="scope">{{ scope.row.title }}</template></el-table-column>
+        <el-table-column  label="内容" width="120"> <template slot-scope="scope">{{ scope.row.content }}</template> </el-table-column>
+        <el-table-column  label="创建时间" width="160"> <template slot-scope="scope">{{ scope.row.createTime }}</template> </el-table-column>
+    </el-table>
+    <Pagination @currPage="accept" :total="total"/>
   </div>
 </template>
 
@@ -19,10 +21,20 @@ export default {
     return {
       tableData: [],
       showSingle: {},
-      showAll: []
+      showAll: [],
+      pagintion: {
+        isPage: 1,
+        page: 1
+      },
+      total: 0
     }
   },
   methods: {
+    accept (page) {
+      this.pagintion.page = page
+      this.initContentList()
+    },
+    // 选择checkbox
     handleSingle (val , row) {
       if (this.showSingle.id === row.id ) {
         this.$emit('deleteRow' , row)
@@ -59,11 +71,7 @@ export default {
     //   this.$emit('middleData', val[val.length-1])
     // },
     async initContentList () {
-      let params = {
-        isPage: 1,
-        page: 1
-      }
-      const { data } = await getContent(params)
+      const { data } = await getContent(this.pagintion)
       console.log(data);
       this.tableData = data.data.entityList
     }
@@ -74,7 +82,9 @@ export default {
 }
 </script>
 <style scoped lang="less">
-// /deep/ .el-checkbox__original ::nth-child(1) {
-//   display: none;
-// }
+
+/deep/ .el-pagination{
+  margin-left: 150px;
+  margin-top: 10px;
+}
 </style>

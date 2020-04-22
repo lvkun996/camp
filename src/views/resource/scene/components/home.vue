@@ -10,7 +10,7 @@
                      <template slot="button">新增课程</template>
                 </Header>
                   <el-button @click="$router.push({path: '/addScene'})">click me</el-button>
-                <Table :tableStyle="tableStyle" :tableData="videoData">
+                <Table :tableStyle="tableStyle" :tableData="CourseoData">
                     <template slot="videoNumber" >课程数量{{total}}条</template>
                     <template slot="header">图文详情</template>
                     <!-- <template slot="resourceBtn" scope="val" >
@@ -79,13 +79,18 @@ export default {
         label3: '创建时间',
         label4: '操作'
       },
-      videoData: [],
-      total: '',
+      CourseoData: [],
+       pagintion: {
+       
+        page: 1
+      },
+      total: 0,
       dialogVisible: false,
       singleClassInfo:{}
     }
   },
   methods: {
+
     // 查看详情
     lookClassInfo (val) {
       // this.dialogVisible = true
@@ -111,14 +116,13 @@ export default {
     accept (page) {
       console.log(page);
       this.pagintion.page = page
-      this.onGetVideoList()
+      this.initCourseList()
     },
     // 初始化列表
     async initCourseList () {
-      const { data } =  await getCourseList({page: 1})
-      console.log(data);
+      const { data } =  await getCourseList(this.pagintion)
       this.total = data.data.total
-      this.videoData = data.data.entityList
+      this.CourseoData = data.data.entityList
     },
   },
 

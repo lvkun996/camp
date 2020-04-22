@@ -91,10 +91,12 @@ export default {
                 return false
             }
             try {
+                console.log(this.uploadArr);
+                
                 for( var i = 0 ; i < this.uploadArr.length; i++){
-                 await addPicture(this.uploadArr[i])
-                 this.uploadArr = []
+                    await addPicture(this.uploadArr[i])
                 }
+                this.uploadArr = []
                 this.pictureForm = {}
                 this.$refs.myUpload.clearFiles()
                 this.$message({message: '上传成功', type: 'success'})

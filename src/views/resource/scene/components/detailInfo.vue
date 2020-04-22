@@ -59,7 +59,6 @@ export default {
     methods: {
         async onEditAllContent () {
             console.log(this.receptionData);
-            
             for ( var i = 0 ;  i < this.receptionData.length ; i++   ) {
                  this.alterNativeData[i].contentId = this.receptionData[i].contentId
                  this.alterNativeData[i].contentType = this.receptionData[i].contentType
@@ -86,14 +85,14 @@ export default {
           console.log(data);
           this.receptionData = data.data.entityList.map( item =>  {
               if ( item.type === 1 ) {
-                   this.$set( item , 'status' , false )
+                this.$set( item, 'status', false )
               }
               else if (  item.type === 2) {
-                   this.$set( item , 'status' , true )
+                this.$set( item, 'status', true )
               }
               return item
           })
-           this.alterNativeData =JSON.parse(JSON.stringify(this.receptionData))  
+          this.alterNativeData =JSON.parse(JSON.stringify(this.receptionData))  
           console.log(this.receptionData);
           
         },

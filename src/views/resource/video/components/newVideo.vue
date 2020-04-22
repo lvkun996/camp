@@ -33,7 +33,7 @@
                        class="text">请保证视频格式正确，且不超过20M</P>
                 </el-form-item>
                     <el-form-item>
-                        <el-button type="danger" style="width:200px;margin-left:100px" @click="uploadForm.videoUrl=''">删除视频</el-button>
+                        <el-button v-if="uploadForm.videoUrl" type="danger" style="width:200px;margin-left:100px" @click="uploadForm.videoUrl=''">删除视频</el-button>
                         <el-button type="primary" v-if="!id" style="width:200px;margin-left:100px" @click="onUpload">立即上传</el-button>
                         <el-button type="warning" v-else style="width:200px;margin-left:100px" @click="onEditVideo">修改视频</el-button>
                     </el-form-item>

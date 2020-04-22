@@ -1,7 +1,7 @@
 <template>
     <div class="tabsPicture_container">
-        <Ground :ground="pictureData" @transmitData="middleData">
-        </Ground>
+        <Ground :ground="pictureData" @transmitData="middleData" />
+         <Pagination @currPage="accept" :total="total"/>
     </div>
 </template>
 
@@ -14,39 +14,44 @@ export default {
         return {
             pictureData: [],
             transmitData: [],
-            res:1
+            res:1,
+            pagintion: {
+              isPage: 1,
+              page: 1
+            },
+            total: 0
         }
     },
     methods: {
+        accept (page) {
+            this.pagintion.page = page
+            this.initPictureList()
+        },
+        // 暂存数据
         middleData (value) {
             this.$emit('middleData', value)
         },
         handleSelectionChange (selection, row) {
-            console.log(selection, row);
             this.transmitData = selection
             this.$emit('transmitData' , this.transmitData )
         },
         singleRow (selection, row) {
-            console.log(selection, row);
             this.transmitData.push(row)
              this.$emit('transmitData' , this.transmitData )
         },
-         toggleSelection(rows) {
-             console.log(rows);
+        toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
             this.$refs.multipleTable.toggleRowSelection(row);
           });
         } else {
-          this.$refs.multipleTable.clearSelection();
+            this.$refs.multipleTable.clearSelection();
         }
       },
         async initPictureList () {
-            let params = {
-                isPage: 1,
-                page: 1
-            }
-            const { data } = await getPictureList(params)
+            const { data } = await getPictureList(this.pagintion)
+            console.log(data);
+            this.total = data.data.total
             this.pictureData = data.data.entityList
         }
     },
@@ -59,5 +64,8 @@ export default {
 }
 </script>
 <style scoped lang="less">
-
+/deep/ .el-pagination{
+    margin-left: 150px;
+    margin-top: 10px;
+}
 </style>

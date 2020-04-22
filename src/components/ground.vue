@@ -7,6 +7,7 @@
                       <span  v-if="single"  class="icon iconfont icon-querenduigougouhao" :style="{display: id === item.id?'block':res?'none':'0'}"></span>
                       <span  v-else class="icon iconfont icon-querenduigougouhao" :style="{display:  id === item.id?'block':'none'}"></span>
                 </div>
+               
             </div>
         </template>
     </div>
@@ -35,6 +36,8 @@ export default {
         }
     },
     methods: {
+
+        // 选择图片
         onImg (item) {
         console.log(item)
 

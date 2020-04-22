@@ -18,7 +18,7 @@ export const getCourseList = params => createAPI(`/admin/course?page=${params.pa
 // 删除课程
 export const deleteClass = params => createAPI(`/admin/course/${params}`, 'DELETE')
 
-// 获取课程列表
+// 获取课程内容
 export const detailInfo = params => createAPI(`/admin/course/${params.id}/courseItems`, 'GET')
 
 // 修改课程内容

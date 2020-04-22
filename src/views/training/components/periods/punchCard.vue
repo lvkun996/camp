@@ -30,13 +30,19 @@ export default {
                page: 1,
                pageSize: ''
             },
-            total: 0
+            total: 0,
+            flag: false // 阻止多选打卡
         }
     },
     methods: {
          confirmScene (value) {
             console.log(value);
-            this.$emit('transmitData', value)
+            
+            if ( !this.flag) {
+                this.$emit('transmitData', value)
+                this.flag = true
+            }
+            
         },
         accept (page) {
           console.log(page);

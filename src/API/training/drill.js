@@ -18,8 +18,14 @@ export const deleteDrill = params =>  createAPI(`/admin/activity/delete/${params
 // 根据id获取训练营营期
 export const getDrillPeriods = params => createAPI(`/admin/activity/getItem/${params.id}/${params.page}`, 'GET')
 
+// 根据id删除训练营营期
+export const deleteDrillPeriods = params => createAPI(`/admin/activity/deleteItem/${params}`, 'DELETE')
+
 // 获取训练营详情
 export const getDrillInfo = params => createAPI(`/admin/activity/getById/${params}`, 'GET')
 
 // 修改训练营详情
 export const editDrillInfo = params => createAPI(`/admin/activity/update`, 'PUT' , params)
+
+// 给训练营期数添加课程和打卡
+export const addClassAndPunch = params => createAPI('/admin/activityItem', 'POST', params)

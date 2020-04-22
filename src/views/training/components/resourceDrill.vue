@@ -61,10 +61,11 @@
                             <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-tag @click="handleEdit(scope.$index, scope.row)" style="margin-right:10px">编辑</el-tag>
-                                <el-tag type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-tag>
+                                <el-tag type="danger" @click="onDeletePeriods(scope.row)">删除</el-tag>
                             </template>
                             </el-table-column>
                         </el-table>
+                        <Pagination class="Pagination" @currPage="accept" :total="total"/>
                 </div>
             </template>
          </Card>
@@ -72,7 +73,7 @@
 </template>
 
 <script>
-import { getDrillPeriods } from '@/API/training/drill.js'
+import { getDrillPeriods , deleteDrillPeriods} from '@/API/training/drill.js'
 export default {
   name: 'resoureDirllPage',
   data () {
@@ -86,12 +87,23 @@ export default {
     }
   },
   methods : {
+      accept (page) {
+      this.pagintion.page = page
+      this.initGetDrillPeriods()
+    },
+    //   删除训练营营期
+    async onDeletePeriods (val) {
+        try {
+            await deleteDrillPeriods(val.id)
+            this.$message({message: '删除成功', type: 'success'})
+            this.initGetDrillPeriods()
+        } catch (error) {
+            this.$message.error('删除失败')
+        }
+    },
     //   获取营期
     async initGetDrillPeriods () {
-        console.log(this.initPeriods);
-        
     const { data } = await  getDrillPeriods(this.initPeriods)
-    console.log(data)
     this.resourceData = data.data.entityList
     this.total = data.data.total
     }
@@ -157,5 +169,8 @@ export default {
       font-Size:12px;
   }
 }
+.Pagination {
+    margin-top: 20px;
+}   
 
-</style>
+</style>    

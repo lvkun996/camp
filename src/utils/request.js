@@ -10,7 +10,7 @@ export const createAPI = (url, method, data) => {
   if (method === 'GET') {
     config.params = data
   } else {
-    if(method === 'POST' ){
+    if (method === 'POST' ) {
       config.headers = {
         'Content-Type': 'application/json;charset=UTF-8',
       }

@@ -14,6 +14,7 @@ export default {
     name: 'pagePage',
     props: {
         total: {
+            type: Number,
             required: true
         }
     },

@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     accept (page) {
-      console.log(page);
       this.pagintion.page = page
       this.onGetVideoList()
     },
