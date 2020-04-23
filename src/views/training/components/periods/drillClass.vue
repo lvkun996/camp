@@ -3,7 +3,9 @@
             <el-form :model="studyTask" ref="myForm" :rules="rules">
                 <el-form-item label="课程名称：" prop='title'>
                     <el-input v-model="studyTask.title"></el-input>
-                    <el-button style="float:right;margin-right:500px" @click="addStudyTask">增加学习任务</el-button>
+                </el-form-item>
+                <el-form-item label="排序：" prop='sort'>
+                    <el-input v-model="studyTask.sort"></el-input>
                 </el-form-item>
                 <el-form-item label="开课时间：" prop='startTime'>
                     <el-date-picker
@@ -15,23 +17,47 @@
                 </el-form-item>
                 <el-form-item label="情景展示">
                         <div class="show"  v-for ="(item , index) in singleData" :key="index">
-                            <el-image style="width:84px;height:84px" :src="item.content" v-if="item.contentType === 3?true : false"></el-image>
-                            <el-image style="width:84px;height:84px" :src="item.content" v-if="item.contentType === 1?true : false"></el-image>
-                            <span v-else> {{item.content}}</span>
+                            <span>{{item.title?item.title:item.content}}</span>
                         </div>
                 </el-form-item>
                 <el-form-item>
                     <el-button style="margin-left:60px" @click="newStudyTask">添加情景流程</el-button>
                     <el-button style="margin-left:60px" @click="deleteStudyTask">删除情景流程</el-button>
                 </el-form-item>
+                <el-form-item>
+                    <el-button v-if="!editOrShow" type="primary" style="margin-left:200px" @click="addStudyTask">增加学习任务</el-button>
+                    <el-button v-else type="warning" style="margin-left:200px" @click="editStudyTask">编辑学习任务</el-button>
+                </el-form-item>
             </el-form>
-            <div class="showScene" v-for="(item , index) in saveData" :key="index">
-                <div class="days">第{{index + 1 }}节课</div>
-                <div class="showSamll" v-for="(element, i ) in item" :key="i">
-                    <el-image class="elImg" v-if="element.contentType !== 3?false: true"  style="width:84px;height:84px" :src="element.content"></el-image>
-                    <div  class="CardText" v-if="element.contentType === 3?false : true"> {{element.content}}</div>
-                </div>
-            </div>
+
+            <el-table :data="saveData">
+                <el-table-column label="课程数">
+                    <template slot-scope="scope">
+                        <span>第{{scope.row.sort}}节课</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="情景名称">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.courseTitle}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="打卡内容">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.courseClockContent}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="打卡时间">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.startTime}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope" >
+                        <el-tag type="success" style="margin-right:10px" @click="onEditClassContent(scope.row)">编辑</el-tag>
+                        <el-tag type="danger" @click="onDeleteClassContent(scope.row)">删除</el-tag>
+                    </template>
+                </el-table-column>
+            </el-table>
         <el-dialog :visible.sync="dialogVisible" width="30%">
             <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="情景流程" name="0"><Sceneflow :key="componentsKey" @transmitData="reception"/></el-tab-pane>
@@ -50,8 +76,8 @@ import Character from '@/views/resource/scene/components/tabs/text.vue'
 
 import PeridosPunchCard from './punchCard.vue'
 
-import { addClassAndPunch  } from '@/API/training/drill.js'
-import { getDrillInfo } from '@/API/resource/course.js'
+import { addClassAndPunch , reasonPeriodsIdGetSecenList , editPeriodsIdGetSecenList , reasonIdDeleteCourseItem} from '@/API/training/drill.js'
+import { detailInfo , deleteCourseItem } from '@/API/resource/course.js'
 export default {
     name: 'drillClassPage',
     props: {
@@ -69,29 +95,97 @@ export default {
             singleData: [],
             componentsKey: 0,
             studyTask: {
-                activityItemId: window.sessionStorage.getItem('id') || '',
+                activityItemId: '',
                 courseId: '',
                 templateId: '',
                 title: '',
                 startTime: '',
-                sort: 0
+                sort: ''
             },
+            relationData: {},
+            relationId: '',
+            editOrShow: false,
             rules: {
                 title: [{ required: true , message: '请输入标题' ,trigger: 'blur'}],
-                startTime: [{ required: true ,message: '请输入时间' , trigger: 'blur'}]
+                startTime: [{ required: true ,message: '请输入时间' , trigger: 'blur'}],
+                sort: [{ required: true ,message: '请输入课时数' , trigger: 'blur'}]
             }
         }
     },
     methods: {
+        // 确定编辑课程
+        async editStudyTask () {
+            let courseId = ''
+            let courseClockInId = ''
+            this.singleData.forEach ( item =>  {
+                if ( item.title ) {
+                    courseId = item.id
+                } else {
+                    courseClockInId = item.id
+                }
+            })
 
-        async initPriodsValue () {
             let params = {
-                id: window.sessionStorage.getItem('periodsId')
+                title: this.studyTask.title,
+                startTime: this.studyTask.startTime,
+                sort: this.studyTask.sort,
+                relationId: this.relationId,
+                courseId,
+                courseClockInId
             }
-            console.log(params);
+            try {
+                 await editPeriodsIdGetSecenList(params)
+                 this.$message({message: '修改成功', type: 'success'})
+                 this.initCourseItem()
+                this.singleData = []
+                this.studyTask.title = null
+                this.studyTask.startTime = null
+                this.studyTask.sort = null
+            } catch (error) {
+                this.$message.error('修改失败')
+            }
+         
+        },
+        // 编辑day课程
+        async onEditClassContent (val) {
+            console.log(val)
+            this.relationId = val.relationId
+        //    this.studyTask.title = val.title
+           this.$set(this.studyTask, 'title' ,val.title )
+           this.$set(this.studyTask, 'sort' ,val.sort )
+        //    this.$set(this.singleData, 0 ,{'title': val.courseTitle})
+        //    this.$set(this.singleData, 1 ,{'content': val.courseClockContent})
+           this.editOrShow =true
+        },
+        // 初始化课程
+        async initCourseItem () {
+            console.log(this.studyTask.activityItemId);
             
-         const { data } =  await getDrillInfo(params)
-         console.log(data);
+          const { data } = await reasonPeriodsIdGetSecenList(this.studyTask.activityItemId)
+          console.log(data);
+          
+          this.saveData = data.data
+        },
+        // 删除课程
+        async onDeleteClassContent (value) {
+            console.log(value);
+            
+          try {
+            const { data } = await reasonIdDeleteCourseItem(value.relationId)
+            console.log(data);
+            
+              this.$message({message: '删除成功', type: 'success'})
+              this.initCourseItem()
+            } catch (error) {
+              this.$message.error('删除失败')
+         }
+        },
+        //编辑时初始课程
+        async initPriodsValue () {
+            let params =  window.sessionStorage.getItem('id')
+            const { data } =  await reasonPeriodsIdGetSecenList(params)
+            console.log(data);
+            this.saveData = data.data
         },
         //  删除情景
         deleteStudyTask () {
@@ -106,25 +200,39 @@ export default {
         async addStudyTask () {
             this.$refs.myForm.validate( async valid => {
                 if (valid) {
+                    console.log(this.singleData);
+                    
                     this.singleData.forEach ( item =>  {
-                    if ( item.contentType === 3 ) {
-                        this.studyTask.courseId = item.id
-                    } else {
-                        this.studyTask.templateId = item.id
-                    }
+                        if ( item.title ) {
+                            this.studyTask.courseId = item.id
+                        } else {
+                           this.studyTask.templateId = item.id
+                        }
                     })
-                    ++ this.studyTask.sort
+                    console.log(this.studyTask)
                     const {data} = await addClassAndPunch(this.studyTask)
                     if ( data.status === 500 ) {
                         this.$message.error(`${data.msg}`)
                         this.singleData = []
-                        this.studyTask = {}
+                        this.studyTask.title = null
+                        this.studyTask.startTime = null
+                        this.studyTask.sort = null
                         return false
                     }
                     this.$message({message: '创建成功', type: 'success'})
-                    this.saveData.push( this.singleData)
+                    console.log(this.singleData)
+                    // this.singleData.forEach( item => {
+                    //     if ( item.contentType === 3 || item.contentType === 1) {
+                    //         this.saveData.push(item)
+                    //     }
+                    // })
+                 const res  = await reasonPeriodsIdGetSecenList(this.studyTask.activityItemId)
+                 console.log(res);
+                 this.saveData = res.data.data
                     this.singleData = []
-                    this.studyTask = {}
+                    this.studyTask.title = null
+                    this.studyTask.startTime = null
+                    this.studyTask.sort = null
                 }
             })
         },
@@ -132,42 +240,6 @@ export default {
         onSaveTime () {
             this.studyTask.startTime = this.$moment(this.studyTask.startTime).format('YYYY-MM-DD HH:mm:ss')
         },
-        // 添加流程和打卡
-        // async confirmAdd () {
-        
-        //     this.singleData.forEach ( item =>  {
-        //          if ( item.contentType === 3 ) {
-        //              this.studyTask.courseId = item.courseId
-        //          } else {
-        //              this.studyTask.templateId = item.id
-        //          }
-        //     })
-        //     if ( !this.studyTask.courseId && !this.studyTask.templateId) {
-        //         this.$message.error('不能添加内容为空的课程')
-        //         return false
-        //     }
-        // try {
-        //     const  { data } = await addClassAndPunch(this.studyTask)
-        //     console.log(data);
-        //     if ( data.status === 500 ) {
-        //         this.$message.error(`${data.msg}`)
-        //     }
-        //     this.studyTask = {}
-        //     this.singleData = []
-        //     this.$message({message: '添加成功', type: 'success'})
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        // },
-        // // 新增情景流程
-        // addLeave () {
-        //     this.dialogVisible = true
-        // },
-        // // 新增一节
-        // newClass () {
-        //     // this.addClass = true
-        //     this.FLAGDAY.push(this.singleData)
-        // },
         onDeleteStudy (val,index) {
             this.singleData = this.singleData.filter( item => {
                 if ( item.id !== val.id ) {
@@ -180,6 +252,7 @@ export default {
             this.dialogVisible = true
         },
         reception (val) {
+            console.log(val);
             
             if (this.singleData.length >= 2) {
                 return false
@@ -195,11 +268,12 @@ export default {
         PeridosPunchCard
     },
     created () {
+        this.studyTask.activityItemId = window.sessionStorage.getItem('id')
+        this.initCourseItem()
         // this.studyTask.activityItemId = this.$route.query.id
-        if ( window.sessionStorage.getItem('periodsId') ) {
-
-            this.initPriodsValue()
-        }   
+        // if ( window.sessionStorage.getItem('periodsId') ) {
+        //     this.initPriodsValue()
+        // }   
       
     }
 }

@@ -2,7 +2,9 @@
     <div class="tabsVideo_container">
 
         <Ground  :ground="videoData" @transmitData="middleData"/>
-        <Pagination @currPage="accept" :total="total"/>
+        <div class="page">
+             <Pagination @currPage="accept" :total="total"/>
+        </div>
     </div>
 </template>
 
@@ -54,8 +56,11 @@ export default {
   /deep/ .cell {
     display: flex;
   }
-  /deep/ .el-pagination{
-    margin-left: 150px;
-    margin-top: 10px;
+//   /deep/ .el-pagination{
+//     margin-left: 150px;
+//     margin-top: 10px;
+// }
+.page{
+    text-align: center;
 }
 </style>

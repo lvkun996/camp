@@ -19,7 +19,9 @@
                         <el-tag type="danger" @click="onDeletePicture(val)">删除</el-tag>
                     </template>
                 </Table>
-                <Pagination @currPage="accept" :total="total" />
+                <div class="page">
+                   <Pagination @currPage="accept"  :total="total"/>
+                </div>
             </template>
         </Card> 
     </div>
@@ -95,5 +97,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
-
+.page {
+    text-align: center;
+}
 </style>

@@ -9,7 +9,6 @@
                 <Header>
                      <template slot="button">新增课程</template>
                 </Header>
-                  <el-button @click="$router.push({path: '/addScene'})">click me</el-button>
                 <Table :tableStyle="tableStyle" :tableData="CourseoData">
                     <template slot="videoNumber" >课程数量{{total}}条</template>
                     <template slot="header">图文详情</template>
@@ -19,6 +18,9 @@
                     <template slot="resourceBtn" scope="val">
                         <el-tag type="success" @click="lookClassInfo(val)">查看课程</el-tag>
                     </template>
+                    <template slot="addBtn" scope="val">
+                        <el-tag type="info" @click="$router.push({path: '/addScene', query: {id: val.single.id}})">增加课程</el-tag>
+                    </template>
                     <template slot="editBtn" scope="val" >
                         <el-tag @click="$router.push({path: '/addClass',query: {id: val.single.id}})">编辑</el-tag>
                     </template>
@@ -26,7 +28,9 @@
                         <el-tag type="danger" @click="onDeleteClass(val)">删除</el-tag>
                     </template>
                 </Table>
-                <Pagination @currPage="accept"  :total="total"/>
+                <div class="page">
+                   <Pagination @currPage="accept"  :total="total"/>
+                </div>
             </template>
         </Card>
         <el-dialog
@@ -40,7 +44,6 @@
               </el-form-item>
               <el-form-item label="老师名称:">
                 <el-input disabled v-model="singleClassInfo.teacherName"></el-input>
-              
               </el-form-item>
               <el-form-item label="老师头像:">
                   <el-image :src="singleClassInfo.teacherUrl"></el-image>
@@ -81,7 +84,6 @@ export default {
       },
       CourseoData: [],
        pagintion: {
-       
         page: 1
       },
       total: 0,
@@ -90,11 +92,8 @@ export default {
     }
   },
   methods: {
-
     // 查看详情
     lookClassInfo (val) {
-      // this.dialogVisible = true
-      // this.singleClassInfo = val.single
       this.$router.push({
         path: '/detailInfo',
         query: {
@@ -111,7 +110,7 @@ export default {
       } catch (error) {
         this.$message.error('删除失败')
       }
-      
+
     },
     accept (page) {
       console.log(page);
@@ -128,6 +127,8 @@ export default {
 
   created () {
     this.initCourseList()
+    console.log(this.$route);
+    
   },
   components: {
     Header,
@@ -139,5 +140,8 @@ export default {
 <style lang="less" scoped>
 .el-input {
   width: 250px;
+}
+.page{
+  text-align: center;
 }
 </style>

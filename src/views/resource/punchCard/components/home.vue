@@ -11,7 +11,7 @@
                   <!-- <template slot="button"><el-button @click="onGoNew" type="primary"></el-button></template> -->
                 </Header>
                 <Table :tableStyle="tableStyle" :tableData="cardData">
-                    <template slot="videoNumber" >视频数量161条</template>
+                    <template slot="videoNumber" >打卡数量{{total}}条</template>
                     <template slot="header">图文详情</template>
 
                     <template slot="editBtn" scope="val" >
@@ -21,7 +21,11 @@
                         <el-tag type="danger" @click="onDeleteCardTask(val)">删除</el-tag>
                     </template>
                 </Table>
+                <div class="page">
+                  <Pagination @currPage="accept"  :total="total"/>
+                </div>
             </template>
+        
         </Card>
     </div>
 </template>
@@ -40,12 +44,12 @@ export default {
         label3: '创建时间',
         label4: '操作'
       },
+      cardData: [],
       pagintion: {
-           isPage: 1,
-           page: 1,
-           pageSize: ''
+        isPage: 1,
+        page: 1
       },
-      cardData: []
+      total: 0
     }
   },
   provide () {
@@ -54,6 +58,10 @@ export default {
     }
   },
   methods: {
+    accept (page) {
+      this.pagintion.page = page
+      this.initPunchCardList()
+    },
     // 跳转到编辑页
     goEditCard (val) {
       this.$router.push( {
@@ -92,5 +100,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.page{
+  text-align: center;
+}
 </style>

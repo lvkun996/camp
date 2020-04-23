@@ -67,20 +67,6 @@
                                 </el-menu-item>
                               </el-menu-item-group>
                             </el-submenu>
-                            <el-submenu index="2">
-                              <template slot="title">
-                                <i class="el-icon-date"></i>
-                                <span>课程管理</span>
-                              </template>
-                              <el-menu-item-group>
-                                <el-menu-item index="2-1">
-                                  <template slot="title">
-                                    <i class="el-icon-s-home"></i>
-                                    <span>课程管理</span>
-                                  </template>
-                                </el-menu-item>
-                              </el-menu-item-group>
-                            </el-submenu>
                             <el-submenu index="3">
                               <template slot="title">
                                 <i class="el-icon-date"></i>

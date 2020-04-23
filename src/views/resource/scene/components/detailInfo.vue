@@ -62,7 +62,6 @@ export default {
             for ( var i = 0 ;  i < this.receptionData.length ; i++   ) {
                  this.alterNativeData[i].contentId = this.receptionData[i].contentId
                  this.alterNativeData[i].contentType = this.receptionData[i].contentType
-
                  if (this.receptionData[i].status === false  ) {
                      this.alterNativeData[i].type = 1
                  } else {
@@ -82,7 +81,6 @@ export default {
                 id: this.id
             }
           const { data } = await detailInfo(params)
-          console.log(data);
           this.receptionData = data.data.entityList.map( item =>  {
               if ( item.type === 1 ) {
                 this.$set( item, 'status', false )
@@ -92,9 +90,9 @@ export default {
               }
               return item
           })
-          this.alterNativeData =JSON.parse(JSON.stringify(this.receptionData))  
           console.log(this.receptionData);
           
+          this.alterNativeData =JSON.parse(JSON.stringify(this.receptionData))  
         },
         onMove({ relatedContext, draggedContext }) {
           const relatedElement = relatedContext.element;

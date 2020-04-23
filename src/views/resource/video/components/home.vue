@@ -22,7 +22,9 @@
                         <el-tag type="danger" @click="onDeleteVideo(val)">删除</el-tag>
                     </template>
                 </Table>
-                  <Pagination @currPage="accept" :total="total"/>
+                <div class="page">
+                   <Pagination @currPage="accept"  :total="total"/>
+                </div>
             </template>
         </Card>
     </div>
@@ -109,5 +111,8 @@ export default {
 
         }
     }
+}
+.page{
+  text-align: center;
 }
 </style>

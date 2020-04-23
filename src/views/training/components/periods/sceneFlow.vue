@@ -1,13 +1,14 @@
 <template>
     <div class="senceFlow_container">
         <el-table :data="senceFlowData" style="width: 100%">
-            <el-table-column label="内容" >
-                <template slot-scope="scope">
-                    <el-image style="width:84px;height:84px" :src="scope.row.content"></el-image>
-                </template>
+            <el-table-column label="title" prop="title">
+                <!-- <template slot-scope="scope"> -->
+                    <!-- <el-image style="width:84px;height:84px" :src="scope.row.content"></el-image> -->
+                    <!-- <span> {{scope.row.title}}</span> -->
+                <!-- </template> -->
             </el-table-column>
-            <el-table-column label="老师名称" prop="teacherName">
-
+            <el-table-column label="创建时间" prop="createTime">
+                   <!-- <span> {{scope.row.createTime}}</span> -->
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
@@ -20,7 +21,7 @@
 </template>
 
 <script>
-import { detailInfo }  from '@/API/resource/course.js'
+import {getCourseList}  from '@/API/resource/course.js'
 export default {
     name: 'senceFlow',
     data () {
@@ -55,7 +56,9 @@ export default {
                 isPage: this.pagintion.isPage,
                 page: this.pagintion.page
             }
-          const { data } =  await detailInfo(params)
+            console.log(params);
+            
+          const { data } =  await getCourseList(params)
           console.log(data);
           this.senceFlowData = data.data.entityList.map( item =>  {
               if ( item.contentType === 3 ) {
@@ -70,6 +73,7 @@ export default {
     },
     created () {
         this.id = this.$route.query.id
+        console.log(this.$route.query.id);
         this.initCourseList()
     }
 }

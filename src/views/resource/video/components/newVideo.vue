@@ -16,7 +16,7 @@
                         <el-upload
                               v-if="!uploadForm.videoUrl" class="avatar-uploader el-upload--text"
                               :limit='1'
-                               action="http://training.test.luojigou.vip/training/file/uploadFile"
+                               action="https://training.test.luojigou.vip/training/file/uploadFile"
                                :show-file-list="false"
                                accept=".mp4"
                                :on-success="handleVideoSuccess" 
@@ -24,11 +24,14 @@
                                :on-progress="uploadVideoProcess">
                             <i  v-if="!uploadForm.videoUrl" class="el-icon-plus avatar-uploader-icon"></i>
                         <div class="uploadText"> 点击红色区域上传视频</div>
-                        <el-progress v-if="videoFlag == true"  type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
+                        
                         <!-- <el-button class="video-btn"slot="trigger" size="small" v-if="isShowUploadVideo"type="primary">选取文件</el-button> -->
-                    </el-upload>   
-                    <video v-else :src="uploadForm.videoUrl" class="avatar video-avatar" controls="controls">您的浏览器不支持视频播放</video> 
-                           
+                    </el-upload>  
+                     <video v-else :src="uploadForm.videoUrl" class="avatar video-avatar" controls="controls">您的浏览器不支持视频播放</video> 
+                    <!-- v-if="videoFlag === true"  -->
+                    <el-progress type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
+                   
+                         <!--   -->
                     <P v-if="isShowUploadVideo"
                        class="text">请保证视频格式正确，且不超过20M</P>
                 </el-form-item>
@@ -47,13 +50,15 @@
 <script>
 // import { uploadImg } from '@/API/training/drill.js'
 import { addVideo , getVideoInfo, editVideo} from '@/API/resource/video.js'
+import { getToken } from '@/API/resource/upload.js'
+import * as qiniu from 'qiniu-js';
 export default {
     name: 'newVideoPage',
     data () {
         return {
-		    videoFlag:false , //是否显示进度条
-		    videoUploadPercent:"", //进度条的进度，
-            isShowUploadVideo:false ,//显示上传按钮
+		    videoFlag: false , //是否显示进度条
+		    videoUploadPercent: 0, //进度条的进度，
+            isShowUploadVideo: false ,//显示上传按钮
             showVideoPath: true,
             uploadForm: {
                 title: null,
@@ -104,30 +109,58 @@ export default {
             }
         },
        //上传前回调
-        beforeUploadVideo (file) {
-                const isLt20M = file.size / 1024 / 1024 < 20;
-                if (['video/mp4'].indexOf(file.type) == -1) { //'video/ogg', 'video/flv', 'video/avi', 'video/wmv', 'video/rmvb'
-                    this.$message.error('请上传正确的视频格式');
-                    return false;
-                }
-                if (!isLt20M) {
-                    this.$message.error('上传视频大小不能超过20MB哦!');
-                    return false;
-                }
-                this.isShowUploadVideo = false;
-            },
+        async beforeUploadVideo (file) {
+            // console.log(file);
+            
+            // var config = {
+            //     useCdnDomain: true,
+            //     region: null
+            // };
+            // const data = await getToken();
+   
+            // var observer = {
+            //   next(res){
+            //     // ...
+            //     console.log("====start=next===")
+            //     console.log(res.total.percent)
+            //     console.log("=====end=next==")
+            //     // toast.message=parseInt(res.total.percent)+"%";
+            //     this.$message({message: `${parseInt(res.total.percent)}'%'`})
+            //   },
+            //   error(err){
+            //     // ...
+            //     // Toast.fail('上传失败');
+            //     this.$message.error('上传失败')
+            //   }, 
+            //   complete(res){
+            //     console.log("====start=complete===")
+            //     console.log(res)
+            //     console.log("=====end=complete==")
+            //     this.videoForm.videoUrl = "https://training.test.luojigou.vip/"+res.hash;
+            //     this.$message({message: '上传成功',type: 'success'})
+            //   }
+            // }
+
+            // var observable = qiniu.upload(file.file, null, data.data, null, config)
+            // var subscription = observable.subscribe(observer)
+
+        },
         //进度条
         uploadVideoProcess (event, file, fileList) {
+            console.log(event, file, fileList);
                 this.videoFlag = true;
+                console.log(file.percentage.toFixed(0) * 1);
                 this.videoUploadPercent = file.percentage.toFixed(0) * 1;
             },
-        
         //上传成功回调
         async handleVideoSuccess (res, file) {
+                console.log(res);
+                
                 this.videoFlag = false;
                 this.videoUploadPercent = 0;
                 this.uploadForm.videoUrl = res.data
                 this.showVideoPath = false
+                console.log(this.uploadForm.videoUrl); 
             },
         },
         computed: {

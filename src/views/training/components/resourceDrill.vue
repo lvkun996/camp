@@ -27,8 +27,9 @@
                         </el-tag>
                     </div>
                 </div>
+                <!--  -->
                 <div class="nav">
-                    <el-button type="primary" @click="$router.push({path:'/newPeriods',query:{id:initPeriods.id}})">新建营期</el-button>
+                    <el-button type="primary" @click="newPeriods">新建营期</el-button>
                     <div class="search">
                         <el-input class="input" placeholder="输入营期名称"></el-input>
                         <el-button>搜索</el-button>
@@ -65,7 +66,9 @@
                             </template>
                             </el-table-column>
                         </el-table>
-                        <Pagination class="Pagination" @currPage="accept" :total="total"/>
+                        <div class="page">
+                            <Pagination class="Pagination" @currPage="accept" :total="total"/>
+                        </div>
                 </div>
             </template>
          </Card>
@@ -91,21 +94,34 @@ export default {
       this.pagintion.page = page
       this.initGetDrillPeriods()
     },
+    // 开始新建营期
+    newPeriods () {
+        window.sessionStorage.removeItem('periodsId')
+        this.$router.push({
+          path: '/newPeriods',
+          query: {
+              tarningId: this.initPeriods.id
+          }
+        })
+    },
     // 跳转到编辑营期页面
     goAddPeriodsPage (value) {
         console.log(value);
         this.$router.push({
             path: '/newPeriods',
             query: {
-                id: this.initPeriods.id,
-                editId: value.id
+                PeriodsId: value.id,
+                trainingId: this.initPeriods.id
             }
         })
     },
     //   删除训练营营期
     async onDeletePeriods (val) {
         try {
-            await deleteDrillPeriods(val.id)
+        const { data } =  await deleteDrillPeriods(val.id)
+
+        console.log(data);
+
             this.$message({message: '删除成功', type: 'success'})
             this.initGetDrillPeriods()
         } catch (error) {
@@ -116,7 +132,6 @@ export default {
     async initGetDrillPeriods () {
     const { data } = await  getDrillPeriods(this.initPeriods)
     console.log(data);
-    
     this.resourceData = data.data.entityList
     this.total = data.data.total
     }
@@ -125,8 +140,8 @@ export default {
   },
   created () {
     console.log(this.$route);
-    if (this.$route.query.id  ) {
-        this.initPeriods.id = this.$route.query.id
+    if (this.$route.query.campId  ) {
+        this.initPeriods.id = this.$route.query.campId
         this.initGetDrillPeriods()
     }
   }
@@ -181,8 +196,7 @@ export default {
       font-Size:12px;
   }
 }
-.Pagination {
-    margin-top: 20px;
-}   
-
+.page{
+    text-align: center;
+}
 </style>    
