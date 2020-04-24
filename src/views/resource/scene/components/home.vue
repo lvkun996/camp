@@ -7,17 +7,17 @@
         <Card>
             <template slot="content">
                 <Header>
-                     <template slot="button">新增课程</template>
+                     <template slot="button">新增情景</template>
                 </Header>
+                  <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="CourseoData">
                   <el-table-column label="课时名称" prop="title"></el-table-column>
                   <el-table-column label="创建时间" prop='createTime'></el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <div class="tag">
-                          <el-tag type="success" @click="lookClassInfo(scope.row)">查看课程</el-tag>
-                          <el-tag type="info" @click="$router.push({path: '/addScene', query: {id: scope.row.id}})">增加课程</el-tag>
-                          <el-tag @click="$router.push({path: '/addClass',query: {id: scope.row.id}})">编辑</el-tag>
+                          <el-tag type="success" @click="lookClassInfo(scope.row)">编辑对话</el-tag>
+                          <el-tag @click="$router.push({path: '/addClass',query: {id: scope.row.id}})">编辑置顶视频</el-tag>
                           <el-tag type="danger" @click="onDeleteClass(scope.row)">删除</el-tag>
                       </div>
                     </template>

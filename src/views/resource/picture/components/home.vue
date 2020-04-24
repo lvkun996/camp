@@ -9,6 +9,7 @@
                 <Header>
                      <template slot="button">新增图片</template>
                 </Header>
+                <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="pictureData">
                     <el-table-column label="图片名称" width-label="180px" prop="title">
                     </el-table-column>

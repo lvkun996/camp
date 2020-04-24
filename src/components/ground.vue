@@ -42,7 +42,6 @@ export default {
         console.log(item)
 
         if ( this.single ) {
-
         }
           item.status = true
           this.id = item.id 
@@ -50,6 +49,8 @@ export default {
           this.transmitData = item
         //   const res = [... new Set(this.transmitData)]
         //     console.log(res);
+        console.log(this.transmitData);
+        
           this.$emit('transmitData', this.transmitData)
         }
     },

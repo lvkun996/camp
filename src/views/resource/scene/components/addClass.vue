@@ -19,8 +19,8 @@
                         <el-button v-if="classForm.videoUrl" type="danger" style="margin-left:100px" @click="classForm.videoUrl=''">点击删除</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button v-if="!classForm.id" type="primary" style="margin-left:100px" @click="onNewClass">新建课程</el-button>
-                        <el-button v-if="classForm.id" type="warning" style="margin-left:100px" @click="onEditClass">编辑课程</el-button>
+                        <el-button v-if="!classForm.id" type="primary" style="margin-left:100px" @click="onNewClass">完成</el-button>
+                        <el-button v-if="classForm.id" type="warning" style="margin-left:100px" @click="onEditClass">完成</el-button>
                     </el-form-item>
                 </el-form>
             </template>

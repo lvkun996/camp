@@ -9,9 +9,9 @@
                 <Header>
                      <template slot="button">新增内容</template>
                 </Header>
+                <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="contentList">
                     <el-table-column label="名称" width_label="180px" prop="title">
-
                     </el-table-column>
                     <el-table-column label="内容" width_label="180px" >
                         <template slot-scope="scope">
@@ -19,7 +19,6 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="创建时间" width_label="180px" prop="createTime">
-
                     </el-table-column>
                     <el-table-column label="操作" width_label="180px">
                          <template slot-scope="scope" >
@@ -30,7 +29,6 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
                 <div class="page">
                     <Pagination @currPage="accept" :total="total"/>
                 </div>
@@ -70,7 +68,7 @@ export default {
         // 删除单条内容
         async onDeleteContent (val) {
             try {
-                await deleteContent(val.single.id)
+                await deleteContent(val.id)
                 this.$message({message: '删除成功', type: 'success'})
                 this.initContentList()
             } catch (error) {
@@ -82,7 +80,7 @@ export default {
             this.$router.push({
                 path: '/addOrEditContent',
                 query: {
-                    id: val.single.id
+                    id: val.id
                 }
             })
         },

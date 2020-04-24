@@ -27,7 +27,6 @@ export default {
 </script>
 <style scoped lang="less">
 .el-pagination{
-    // margin-left: 550px;
     margin-top: 20px;
 }
 </style>

@@ -1,13 +1,18 @@
 <template>
   <div class="tabsText_container">
-    <el-table  ref="multipleTable" :data="tableData" 
-    tooltip-effect="dark" style="width: 100%"
-    @select="handleSingle" @select-all="handleAll"
-    >
-        <el-table-column  type="selection" width="55"></el-table-column>
-        <el-table-column  label="名称" width="120"> <template slot-scope="scope">{{ scope.row.title }}</template></el-table-column>
-        <el-table-column  label="内容" width="120"> <template slot-scope="scope">{{ scope.row.content }}</template> </el-table-column>
-        <el-table-column  label="创建时间" width="160"> <template slot-scope="scope">{{ scope.row.createTime }}</template> </el-table-column>
+
+    <el-table :data="tableData" >
+      <el-table-column label="名称" >
+        <template slot-scope="scope"><div class="content"> {{ scope.row.title }}</div></template>
+      </el-table-column>
+      <el-table-column label="内容" >
+        <template slot-scope="scope"> <div class="content">{{ scope.row.content }}</div>  </template>
+      </el-table-column>
+      <el-table-column label="操作" >
+        <template slot-scope="scope" >
+            <el-tag type="success" @click="addContent(scope.row)">选择</el-tag>
+        </template>
+      </el-table-column>
     </el-table>
         <div class="page">
              <Pagination @currPage="accept" :total="total"/>
@@ -36,41 +41,27 @@ export default {
       this.pagintion.page = page
       this.initContentList()
     },
+    // 选择当前文字
+    addContent (val) {
+      console.log(val);
+      this.$emit('middleData', val)
+    },
     // 选择checkbox
-    handleSingle (val , row) {
-      if (this.showSingle.id === row.id ) {
-        this.$emit('deleteRow' , row)
-        this.showSingle = {}
-        return false
-      }
-      this.showSingle = row
-      this.$emit('middleData', row)
-    },
-    handleAll (val) {
-      // let flag = false
-      // if (this.showAll.length === val.length) {
-      //   console.log(this.showAll.length, val.length);
-        
-      //     flag = true
-      //     console.log(this.showAll);
-          
-      //     this.$emit('deleteAll', this.showAll , flag)
-      //     // this.showAll = []
-      //     return false
-      // }
-      // this.showAll = val
-      // console.log(this.showAll);
-      
-      val.forEach( item => {
-         this.$emit('middleData', item)
+    // handleSingle (val , row) {
+    //   if (this.showSingle.id === row.id ) {
+    //     this.$emit('deleteRow' , row)
+    //     this.showSingle = {}
+    //     return false
+    //   }
+    //   this.showSingle = row
+    //   this.$emit('middleData', row)
+    // },
+    // handleAll (val) {
+    //   val.forEach( item => {
+    //      this.$emit('middleData', item)
        
-      })
+    //   })
 
-    },
-    // checkbox 选择出现变化
-    // handleSelectionChange (val) {
-    //   console.log(val);
-    //   this.$emit('middleData', val[val.length-1])
     // },
     async initContentList () {
       const { data } = await getContent(this.pagintion)
@@ -86,5 +77,12 @@ export default {
 <style scoped lang="less">
 .page{
   text-align: center;
+}
+.content{
+    display: inline-block;
+    // width: 300px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 </style>

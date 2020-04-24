@@ -49,12 +49,12 @@
                                     </div>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="创建时间" width="180">
+                            <el-table-column label="创建时间" >
                                 <template slot-scope="scope">
                                     {{scope.row.startTime}}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="结束时间" width="180">
+                            <el-table-column label="结束时间" >
                                 <template slot-scope="scope">
                                     {{scope.row.endTime}}
                                 </template>

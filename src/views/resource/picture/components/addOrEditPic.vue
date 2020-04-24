@@ -17,10 +17,11 @@
                         </template>
                     </el-form-item>
                     <!-- http://training.test.luojigou.vip/training/file/uploadFile -->
+                    <!--    :data="uploadToken" -->
                     <el-form-item label="上传图片:">
                         <el-upload
                         ref="myUpload"
-                          action="https://up-z0.qiniup.com"
+                          action='https://training.test.luojigou.vip/training/file/uploadFile'
                           list-type="picture-card"
                           :on-preview="handlePictureCardPreview"
                           :on-remove="handleRemove"
@@ -28,7 +29,7 @@
                           :on-change="handleImgUrlChange"
                           :before-upload="beforeUploadPicture" 
                           :limit='1'
-                          :data="uploadToken"
+                          accept=".png, .jpg"
                           >
                             <i class="el-icon-plus"></i>
                             <div class="hintText">点击这里上传哦</div>
@@ -119,7 +120,7 @@ export default {
            this.fileList = []
         },
         // 文件上传之前
-        async beforeUploadPicture (file) {
+         beforeUploadPicture (file) {
             const isPNG = file.type === "image/png";
             const isJPEG = file.type === "image/jpeg";
             const isJPG = file.type === "image/jpg";
@@ -127,33 +128,36 @@ export default {
                 this.$message.error("上传头像图片只能是 jpg、png、jpeg 格式!");
                 return false;
             }
-            const current = new Date().getTime()
-            // const key = null
-            try {
-                const { data } = await getToken()
-                const token = data.data
-                // this.uploadToken.key = key 
-                this.uploadToken.token = token 
-                return true
-            } catch (error) {
-                console.log(error);
+            // const current = new Date().getTime()
+            // const key = `upload_pic_${file.name}?`+ Date.parse(new Date())
+            // try {
+            //     const { data } = await getToken()
+            //     const token = data.data
+            //     this.uploadToken.key = key 
+            //     this.uploadToken.token = token 
+            //     return true
+            // } catch (error) {
+            //     console.log(error);
                 
-                return error
-            }
+            //     return error
+            // }
         },
         // 文件上传成功
         handlePictureSuccess (res, file) {
+            console.log(1);
+            
             console.log(res , file);
             if( res.status === 500 ) {
                 this.$message.error('上传失败')
                 return false
             }
             let name = file.name.split('.')[0]
-            this.pictureForm.title = name
-            this.pictureForm.imgUrl = 'http://vote-teacher-video.luojigou.vip/'+res.hash
+            // this.pictureForm.title = name
+            this.$set(this.pictureForm, 'title', name)
+            this.pictureForm.imgUrl = res.data
             if (!this.pictureForm.id) {
                 let upload = {
-                imgUrl: 'http://vote-teacher-video.luojigou.vip/'+ res.hash,
+                imgUrl: res.data
                 }
                 this.uploadArr.push(upload)
                 // this.pictureForm.title = 
@@ -205,5 +209,8 @@ export default {
 /deep/ .el-form-item__content{
     display: flex;
     align-items: center;
+}
+/deep/ .el-image__inner{
+    object-fit: cover;
 }
 </style>

@@ -9,13 +9,14 @@
                 <Header>
                      <template slot="button">新增训练营</template>
                 </Header>
+                <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="drillData">
                   <el-table-column label="训练营名称" width-label="180px" prop="title">
 
                   </el-table-column>
                   <el-table-column label="训练营封面" width-label="180px" prop="title">
                     <template slot-scope="scope">
-                      <el-image  :src="scope.row.imgUrl"></el-image>
+                      <el-image   :src="scope.row.imgUrl"></el-image>
                     </template>
                   </el-table-column>
                   <el-table-column label="营期数" width-label="180px" prop="days">
@@ -27,7 +28,8 @@
                   <el-table-column label="操作" width-label="180px" >
                     <template slot-scope="scope">
                       <div class="tag">
-                        <el-tag @click="goEditDrill(scope.row)">编辑</el-tag>
+                        <el-tag type="info" @click="goResourceDrill(scope.row)">营期管理</el-tag>
+                        <el-tag @click="goEditDrill(scope.row)">训练营管理</el-tag>
                         <el-tag type="danger" @click="onDeleteDrill(scope.row)">删除</el-tag>
                       </div>
                     </template>
@@ -72,14 +74,14 @@ export default {
       this.$router.push({
         path: '/addDrill',
         query: {
-          id: value.single.id, 
+          id: value.id, 
         }
     })
     },
     // 删除训练营
     async onDeleteDrill (value) {
       try {
-        await deleteDrill(value.single.id)
+        await deleteDrill(value.id)
         this.$message({message: '删除成功',type: 'success'})
         this.onGetDirll()
       } catch (error) {
@@ -91,7 +93,7 @@ export default {
       this.$router.push({
         path: '/resourceDrill',
         query: {
-          campId : value.single.id
+          campId : value.id
         }
       })
     },
@@ -120,8 +122,11 @@ export default {
   width: 80px;
   height: 80px;
 }
-.el-image__inner{
+/deep/ .el-image__inner{
   object-fit: cover;
 }
-
+.tag{
+  width: 180px;
+  text-align: center;
+}
 </style>

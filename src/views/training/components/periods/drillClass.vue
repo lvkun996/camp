@@ -25,7 +25,7 @@
                     <el-button style="margin-left:60px" @click="deleteStudyTask">删除情景流程</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button v-if="!editOrShow" type="primary" style="margin-left:200px" @click="addStudyTask">增加学习任务</el-button>
+                    <el-button v-if="!editOrShow" type="primary" style="margin-left:200px" @click="addStudyTask">完成</el-button>
                     <el-button v-else type="warning" style="margin-left:200px" @click="editStudyTask">编辑学习任务</el-button>
                 </el-form-item>
             </el-form>

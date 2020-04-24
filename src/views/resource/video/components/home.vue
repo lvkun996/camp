@@ -9,6 +9,7 @@
                 <Header>
                      <template slot="button">新增视频</template>
                 </Header>
+                <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="videoData" >
                   <el-table-column label="视频名称" width-label="180px" prop="title">
                   </el-table-column>
@@ -29,7 +30,8 @@
                   </el-table-column>
                 </el-table>
                 <div class="page">
-                   <Pagination @currPage="accept"  :total="total"/>
+                   <Pagination @currPage="accept"  :total="total"/> 
+               
                 </div>
             </template>
         </Card>
@@ -119,7 +121,11 @@ export default {
     }
 }
 .page{
+  display: flex;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 .el-image{
   width: 80px;

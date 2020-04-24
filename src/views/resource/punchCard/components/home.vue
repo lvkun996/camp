@@ -10,6 +10,7 @@
                   <template  slot="button">新增打卡</template>
                   <!-- <template slot="button"><el-button @click="onGoNew" type="primary"></el-button></template> -->
                 </Header>
+                <el-tag >总条数:{{total}}</el-tag>
                 <el-table :data="cardData">
                   <el-table-column label="内容" width-label="180px" prop="content">
 

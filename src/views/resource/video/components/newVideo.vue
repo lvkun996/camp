@@ -16,6 +16,7 @@
                 <!-- "https://training.test.luojigou.vip/training/file/uploadFile" -->
                 <!-- http://upload.qiniup.com -->
                 <!-- 'https://upload-z2.qiniup.com' -->
+                <!--    accept=".mp4" -->
                         <el-upload
                               v-if="!uploadForm.videoUrl" class="avatar-uploader el-upload--text"
                               :limit='1'
@@ -59,8 +60,8 @@ export default {
             isShowUploadVideo: false ,//显示上传按钮
             showVideoPath: true,
             uploadForm: {
-                title: null,
-                videoUrl: null
+                title: '',
+                videoUrl: ''
             },
             id: '',  // 视频id
             form: {},
@@ -110,10 +111,10 @@ export default {
                 return false
             } else {
                 try {
+                    this.uploadForm.videoUrl += '_low.mp4'
                     await addVideo(this.uploadForm)
                     this.$message({message: '上传成功', type: 'success'})
-                    this.uploadForm.title = '',
-                    this.uploadForm.videoUrl = ''
+                    this.uploadForm = {}
                 } catch (error) {
                     this.$message('上传失败')
                 }
@@ -121,6 +122,8 @@ export default {
         },
        //上传前回调
         async beforeUploadVideo (file) {
+            console.log(11);
+            
             const fileType = file.type
             const current = new Date().getTime()
             // const key = null // key为上传后文件名 必填
@@ -153,7 +156,7 @@ export default {
             
                 this.videoFlag = false;
                 this.videoUploadPercent = 0;
-                this.uploadForm.videoUrl = 'http://res.training.luojigou.vip/'+res.hash
+                this.uploadForm.videoUrl = 'http://video.training.luojigou.vip/'+res.hash
                 this.showVideoPath = false
             },
         },

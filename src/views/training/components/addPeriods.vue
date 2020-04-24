@@ -52,9 +52,13 @@
                 <DrillClass :title="form.title"/>
             </template>
             <!-- -->
-              <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --" v-if="active === 0?false: true">上一步</el-button>
-              <el-button v-if="form.id" type="primary" class="addBtn"  style="margin-left:500px" @click="onEditDrillPeridos"> 编辑去往下一步</el-button>
-              <el-button v-else type="primary" class="addBtn"  style="margin-left:500px" @click="onAddDrillPeridos"> 下一步 </el-button>
+              <!-- <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --" v-if="active === 0 || 1?false: true">上一步</el-button> -->
+              <template v-if="active === 1? false : true">
+                    <el-button v-if="form.id" type="primary" class="addBtn"  style="margin-left:500px" @click="onEditDrillPeridos"> 编辑去往下一步</el-button>
+              </template>
+              <template  v-if="!form.id" > 
+                     <el-button v-if="active === 1? false : true" type="primary" class="addBtn"  style="margin-left:500px" @click="onAddDrillPeridos"> 下一步 </el-button>
+              </template>
             </template> 
         </Card>
         <el-dialog  title="提示"  :visible.sync="dialogVisible" width="30%"  >

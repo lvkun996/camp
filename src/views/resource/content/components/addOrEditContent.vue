@@ -12,7 +12,7 @@
                         <el-input v-model="text.title"></el-input>
                     </el-form-item>
                     <el-form-item label="内容:"  prop='content'>
-                        <el-input v-model="text.content" type="textarea" style="width:300px"></el-input>
+                        <el-input v-model="text.content" type="textarea" style="width:800px"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button v-if="!text.id" type="primary" @click="onAddContent">新增</el-button>

@@ -57,7 +57,7 @@
                                 <el-menu-item index="/scene">
                                     <template slot="title">
                                         <i class="el-icon-refresh-left"></i>
-                                        <span>情景流程</span>
+                                        <span>对话流程</span>
                                   </template>
                                 </el-menu-item>
                                 <el-menu-item index="/punchCard">

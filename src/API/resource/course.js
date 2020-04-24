@@ -19,7 +19,7 @@ export const getCourseList = params => createAPI(`/admin/course?page=${params.pa
 export const deleteClass = params => createAPI(`/admin/course/${params}`, 'DELETE')
 
 // 获取课程内容
-export const detailInfo = params => createAPI(`/admin/course/${params.id}/courseItems`, 'GET')
+export const detailInfo = params => createAPI(`/admin/course/${params.id}/courseItems?page=${params.page}&pageSize=${params.pageSize}`, 'GET')
 
 // 修改课程内容
 export const editAllContent = params => createAPI('/admin/course/courseItem', 'PUT', params)
