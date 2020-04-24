@@ -11,7 +11,7 @@
                 <el-aside :width="collapse?'64px':'200px'" >
                      <div class="left-box">
                          <div class="title" :style ="{'fontSize':collapse?'12px':'20px'}">
-                           {{!collapse?'中德智慧网校':'中德'}}
+                           {{!collapse?'情景课程平台':'情景流程'}}
                          </div>
                      </div>
                     <div class="flex_box" @click="collapse = !collapse">
@@ -63,20 +63,6 @@
                                    <template slot="title">
                                       <i class="el-icon-coordinate"></i>
                                       <span>打卡管理</span>
-                                  </template>
-                                </el-menu-item>
-                              </el-menu-item-group>
-                            </el-submenu>
-                            <el-submenu index="2">
-                              <template slot="title">
-                                <i class="el-icon-date"></i>
-                                <span>课程管理</span>
-                              </template>
-                              <el-menu-item-group>
-                                <el-menu-item index="2-1">
-                                  <template slot="title">
-                                    <i class="el-icon-s-home"></i>
-                                    <span>课程管理</span>
                                   </template>
                                 </el-menu-item>
                               </el-menu-item-group>

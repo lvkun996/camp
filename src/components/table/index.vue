@@ -31,6 +31,7 @@
                 <el-table-column :label="tableStyle.label4"> 
                   <template slot-scope="scope">
                       <div style="margin-right:10px"><slot name="resourceBtn" :single="scope.row"></slot></div>
+                      <div style="margin-right:10px"><slot name="addBtn" :single="scope.row"></slot></div>
                       <div style="margin-right:10px"><slot name="editBtn" :single="scope.row"></slot></div>
                       <slot name="deleteBtn" :single="scope.row"></slot>
                   </template>

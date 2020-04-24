@@ -23,7 +23,9 @@
                         <el-tag type="danger" @click="onDeleteDrill(val)">删除</el-tag>
                     </template>
                 </Table>
-                 <Pagination @currPage="accept" :total="total"/>
+                <div class="page">
+                   <Pagination @currPage="accept"  :total="total"/>
+                </div>
             </template>
         </Card>
     </div>
@@ -67,7 +69,7 @@ export default {
       this.$router.push({
         path: '/addDrill',
         query: {
-          id: value.single.id
+          id: value.single.id, 
         }
     })
     },
@@ -86,7 +88,7 @@ export default {
       this.$router.push({
         path: '/resourceDrill',
         query: {
-          id : value.single.id
+          campId : value.single.id
         }
       })
     },
@@ -103,10 +105,13 @@ export default {
     Table
   },
   created () {
+
     this.onGetDirll()
   }
 }
 </script>
 <style scoped lang="less">
-
+.page{
+  text-align: center;
+}
 </style>

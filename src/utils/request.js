@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'http://training.test.luojigou.vip/',
+  baseURL: 'https://training.test.luojigou.vip/',
   timeout: 3000
 })
 

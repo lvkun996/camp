@@ -11,12 +11,6 @@
                     <el-form-item label="课程名称：" prop="title">
                         <el-input v-model="classForm.title"></el-input>
                     </el-form-item> 
-                    <!-- <el-form-item label="课程封面：" prop="imgUrl">
-                        <el-image v-if="classForm.imgUrl" :src="classForm.imgUrl" style="width:146px;height:146px"></el-image>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" style="margin-left:100px" @click="openImgDialog">选择封面</el-button>
-                    </el-form-item> -->
                     <el-form-item label="选择视频：" prop="videoUrl">
                         <el-image  v-if="classForm.videoUrl" :src="classForm.videoUrl" style="width:146px;height:146px"></el-image>
                     </el-form-item>
@@ -64,7 +58,7 @@ export default {
                 title: '',
                 // imgUrl: '',
                 videoUrl: '',
-                id: ''
+                videoId: ''
             },
             rules: {
                 title: [{required: true , message: '该项不能为空', trigger: 'blur'}],
@@ -76,15 +70,14 @@ export default {
     methods: {
         // 编辑Class 
         async onEditClass () {
-         try {
-            await editCourse(this.classForm)
-            this.$message({message: '编辑成功', type: 'success'})
-            this.classForm = {}
-            this.$router.push( {path: '/scene'} )
-         } catch (error) {
-             this.$message.error( '编辑信息不全' )
-         }
-         
+            try {
+               await editCourse(this.classForm)
+               this.$message({message: '编辑成功', type: 'success'})
+               this.classForm = {}
+               this.$router.push( {path: '/scene'} )
+            } catch (error) {
+                this.$message.error( '编辑信息不全' )
+            }
         },
         // 选择封面图 
         openImgDialog () {
@@ -93,14 +86,18 @@ export default {
         // 初始化编辑
         async initEditClass () {
         const { data } = await getClassInfo(this.classForm.id)
+        console.log(data);
+        
         this.classForm.title = data.data.title
-        this.classForm.videoUrl = data.data.videoUrl + '?vframe/jpg/offset/1'
+        // this.classForm.videoUrl = data.data.videoUrl + '?vframe/jpg/offset/1'
         },
         // 新建课程
         async onNewClass () {
             this.$refs.myForm.validate( async valid => {
                 if (valid) {
                     try {
+                        console.log(this.classForm);
+                        
                         await addCourse(this.classForm)
                         this.$message({message: '新建成功', type: 'success'})
                         this.classForm = {}
@@ -119,23 +116,14 @@ export default {
         },
         receptionImg (val) {
             console.log(val);
-            
+        
             this.classForm.imgUrl = val.imgUrl
         },
         reception (val) {
             console.log(val);
+            this.classForm.videoId = val.id
             this.classForm.videoUrl = val.videoUrl
         }
-        // handleVideoSuccess(res, file) {
-        //     console.log(res,file )
-        //     this.classForm.imgUrl = res.data
-        // },
-        // handlePictureCardPreview () {
-
-        // },
-        // handleRemove () {
-
-        // }
     },
     created () {
         if (this.$route.query.id) {

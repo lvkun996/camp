@@ -9,7 +9,9 @@
         <el-table-column  label="内容" width="120"> <template slot-scope="scope">{{ scope.row.content }}</template> </el-table-column>
         <el-table-column  label="创建时间" width="160"> <template slot-scope="scope">{{ scope.row.createTime }}</template> </el-table-column>
     </el-table>
-    <Pagination @currPage="accept" :total="total"/>
+        <div class="page">
+             <Pagination @currPage="accept" :total="total"/>
+        </div>
   </div>
 </template>
 
@@ -82,9 +84,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
-
-/deep/ .el-pagination{
-  margin-left: 150px;
-  margin-top: 10px;
+.page{
+  text-align: center;
 }
 </style>

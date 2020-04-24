@@ -1,7 +1,7 @@
 import { createAPI } from '@/utils/request.js'
 
 // 打卡任务列表
-export const punshCardTaskList = params => createAPI(`/admin/courseClockInTemplate?isPage=${params.isPage}&page=${params.page}&pageSize=${params.pageSize}` , 'GET')
+export const punshCardTaskList = params => createAPI(`/admin/courseClockInTemplate?isPage=${params.isPage}&page=${params.page}` , 'GET')
 
 // 添加打卡任务
 export const addPunshCardTask = params => createAPI('/admin/courseClockInTemplate', 'POST', params)

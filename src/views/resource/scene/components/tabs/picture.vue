@@ -1,7 +1,9 @@
 <template>
     <div class="tabsPicture_container">
         <Ground :ground="pictureData" @transmitData="middleData" />
-         <Pagination @currPage="accept" :total="total"/>
+         <div class="page">
+             <Pagination @currPage="accept" :total="total"/>
+        </div>
     </div>
 </template>
 
@@ -64,8 +66,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
-/deep/ .el-pagination{
-    margin-left: 150px;
-    margin-top: 10px;
+.page{
+    text-align: center;
 }
 </style>

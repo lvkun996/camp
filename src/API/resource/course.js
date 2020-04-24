@@ -23,3 +23,9 @@ export const detailInfo = params => createAPI(`/admin/course/${params.id}/course
 
 // 修改课程内容
 export const editAllContent = params => createAPI('/admin/course/courseItem', 'PUT', params)
+
+
+
+
+// 删除课程内容
+export const deleteCourseItem = params => createAPI(`/admin/courseItem/${params}`, 'DELETE')

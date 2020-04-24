@@ -19,7 +19,7 @@
                     <el-form-item label="上传图片:">
                         <el-upload
                         ref="myUpload"
-                          action="http://training.test.luojigou.vip/training/file/uploadFile"
+                          action="https://training.test.luojigou.vip/training/file/uploadFile"
                           list-type="picture-card"
                           :on-preview="handlePictureCardPreview"
                           :on-remove="handleRemove"

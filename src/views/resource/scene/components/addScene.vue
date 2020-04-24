@@ -88,24 +88,38 @@ export default {
         },
         // 上传情景流程
         async onUploadScene () {
+            console.log( this.receptionData);
+            
         const res = this.receptionData.map( (item , index) => {
+            console.log(item);
                 item.sort = index
                 item.status?item.type = 1 : item.type = 2
-                item.content_id = item.id
+                item.contentId = item.id
+                item.id = null
+                item.courseId = this.$route.query.id
                 if( item.hasOwnProperty('imgUrl') ) {
-                    item.content_type = 1
+                    item.contentType = 1
                 }
                 else if ( item.hasOwnProperty('videoUrl') ) {
-                    item.content_type = 2
+                    item.contentType = 2
+                }
+                else {
+                    item.contentType = 0
                 }
                 return item
             })
             console.log(res);
-            
           try {
             await addCourseContent(res)
             this.$message({message: '上传成功', type: 'success'})
-            this.receptionData = []
+           
+            // this.receptionData = []
+             this.$router.push({
+                path: '/detailInfo',
+                query: {
+                    id: this.$route.query.id
+                }
+            })
           } catch (error) {
               this.$message.error( '上传失败' )
           }   
@@ -153,20 +167,8 @@ export default {
             })
         },
         reception (value) {
-            // if ( value.content ) {
-            //     let flag = false
-            //     this.receptionData.forEach( (item,index) => {
-            //         if (item.id === value.id) {
-            //             flag = true
-            //             this.$delete(this.receptionData, index)
-            //         }
-            //     })
-            //     if ( !flag ) {
-            //         this.receptionData.push(value)
-            //     }
-            // } else {
-            //     this.receptionData.push(value)
-            // }
+            console.log(value);
+            
              this.receptionData.push(value)
             
         },

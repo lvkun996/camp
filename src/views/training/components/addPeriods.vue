@@ -32,6 +32,7 @@
                     <el-form-item label="时间选择:" label-width="180px" prop="startTime">
                         <el-date-picker
                         v-model="time"
+                
                         @change="onSaveTime"
                             type="datetimerange"
                             range-separator="至"
@@ -39,23 +40,24 @@
                             end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item>
+                    <!--         :value="new Date('2020-04-02 00:00:00')" -->
+                        <!-- -->
+                  <!-- <el-form-item>
+                       default-value="Thu Apr 09 2020 00:00:00 GMT+0800"
                         <el-tag style="margin-left:50px" @click="onAddDrillPeridos">确定营期</el-tag>
-                    </el-form-item>
+                    </el-form-item>   -->
                 </el-form>
             </template>
             <template v-else-if="active === 1? true: false">
                 <DrillClass :title="form.title"/>
             </template>
+            <!-- -->
               <el-button type="primary" class="addBtn" style="margin-left:500px" @click="active --" v-if="active === 0?false: true">上一步</el-button>
-              <el-button type="primary" class="addBtn"  style="margin-left:500px" @click="active ++" v-if="active === 1?false: true">下一步</el-button>
+              <el-button v-if="form.id" type="primary" class="addBtn"  style="margin-left:500px" @click="onEditDrillPeridos"> 编辑去往下一步</el-button>
+              <el-button v-else type="primary" class="addBtn"  style="margin-left:500px" @click="onAddDrillPeridos"> 下一步 </el-button>
             </template> 
         </Card>
-        <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-        >
+        <el-dialog  title="提示"  :visible.sync="dialogVisible" width="30%"  >
         <Picture @middleData="reception" :key="componentKey"/>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
@@ -65,7 +67,7 @@
     </div>
 </template>
 <script>
-import { addDrillPeriods } from '@/API/training/drill.js'
+import { addDrillPeriods , getPeriodsInfo ,editDrillPeriods} from '@/API/training/drill.js'
 import DrillClass from './periods/drillClass'
 import Picture from '@/views/resource/scene/components/tabs/picture.vue'
 export default {
@@ -88,13 +90,31 @@ export default {
               imgUrl: [{ required: true, message: '请输入营期图片', trigger: 'blur' }],
               startTime: [{ required: true, message: '请输入活动开始时间', trigger: 'blur' }]
           },
-          time: null,
+          time: [],
           active: 0,
           dialogVisible: false,
-          componentKey: 0
+          componentKey: 0,
+          editId: ''
         }
     },
     methods: {
+
+        // 获取当前id详情
+        async initPeriodsInfo () {
+           const { data } =  await getPeriodsInfo(this.form.id)
+
+           console.log(data);
+           this.form.title =  data.data.title
+           this.form.startTime =  data.data.startTime
+           this.form.price =  data.data.price
+           this.form.imgUrl =  data.data.imgUrl
+           this.form.previousPrice =  data.data.previousPrice
+           this.form.endTime =  data.data.endTime
+
+           this.time[0] = data.data.startTime
+           this.time[1] = data.data.endTime
+        },
+        
         // 选择图片
         onSeleteImg () {
             if (!this.form.imgUrl) {
@@ -114,16 +134,42 @@ export default {
            
             this.$refs.form.validate( async valid => {
                 if ( valid ) {
-                    try {
-                       await addDrillPeriods(this.form)
-                       this.$message({ message: '新增成功', type: 'success'})
-                       this.form = {}
-                       this.time = null
-                    } catch (error) {
-                        this.$message.error( '新增失败' )  
-                    } 
+                        console.log(this.form)
+                        try {
+                            const { data } = await addDrillPeriods(this.form)
+                            console.log(data);
+                            this.$message({ message: '新增成功', type: 'success'})
+                            this.form = {}
+                            this.time = null
+                            this.active ++
+                            window.sessionStorage.setItem('id', data.data.id)
+                            } catch (error) {
+                                this.$message.error( '新增失败' )
+                        }
+                    //    const { data } = await editDrillPeriods(this.form)
+                    //    console.log(data);
+                    //    this.active ++
+                    //     window.sessionStorage.setItem('id', this.form.id)
+                    //    console.log(data);
+                    
                 }
             })
+        },
+        // 编辑去往下一步
+        async onEditDrillPeridos () {
+               
+               
+                 try {
+                     const { data } = await editDrillPeriods(this.form)  
+                     console.log(data);
+                     this.$message({message: '编辑成功',type: 'success'})
+                     this.active ++
+                     window.sessionStorage.setItem('id', this.form.id)
+                 } catch (error) {
+                        this.$message.error('编辑失败')
+                 }
+
+  
         },
         // 日期格式转换
         onSaveTime () {
@@ -136,7 +182,14 @@ export default {
         Picture
     },
     created () {
-        this.form.activityId = this.$route.query.id
+        console.log(this.$route.query);
+        
+            
+        this.form.activityId = this.$route.query.tarningId
+        this.form.id = this.$route.query.PeriodsId
+        //  console.log(this.$route.query.editId);
+        this.initPeriodsInfo()
+
     }
 }
 </script>
@@ -145,10 +198,13 @@ export default {
     width: 300px;
 }
 .addBtn{
-    width: 100px;
+    width: 200px;
     margin-top: 50px;
 }
 .el-steps{
     margin-bottom: 20px;
+}
+/deep/ .el-image__inner{
+    object-fit: cover;
 }
 </style>
