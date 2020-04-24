@@ -23,9 +23,11 @@
             prop="teacherUrl"
             label="头像">
             <template slot-scope="scope">
+              <el-avatar :src="scope.row.teacherUrl"></el-avatar>
+              <!-- 
               <el-image
                 :src="scope.row.teacherUrl"
-                fit="cover"></el-image>
+                fit="cover"></el-image> -->
             </template>
           </el-table-column>
           <el-table-column
