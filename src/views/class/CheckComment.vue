@@ -153,25 +153,26 @@ export default {
     handleClassCheck(index, row) {
       this.$router.push({ path: '/class/check/comment/detail', query: { id: row.id } })
     },
-    async handleSetKey(item) {
-      const { data } = await setGoodAnswer({
-        commentId: item.id
-      });
-      if(data.status === 200) {
-        this.$message.success('设置成功');
-        this.loadCheckComment();
-      } else {
-        this.$message.error('设置失败');
-      }
-    },
-    async handleSetGood(item) {
+    async handleSetKey(index,item) {
       const { data } = await setKeyProblem({
         commentId: item.id
       });
       if(data.status === 200) {
-        this.$message.success('设置成功');
+        this.$message.success('成功');
+        this.loadCheckComment();
       } else {
-        this.$message.error('设置失败');
+        this.$message.error(data.msg);
+      }
+    },
+    async handleSetGood(index, item) {
+      const { data } = await setGoodAnswer({
+        commentId: item.id
+      });
+      if(data.status === 200) {
+        this.$message.success('成功');
+        this.loadCheckComment();
+      } else {
+        this.$message.error(data.msg);
       }
     },
   }
