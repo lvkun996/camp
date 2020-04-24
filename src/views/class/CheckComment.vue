@@ -9,6 +9,24 @@
         <el-table
           :data="checkCommentList"
           style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="图片内容：">
+                  <div v-for="(item, index) in props.row.content.imgList" :key="index">
+                    <el-image
+                      style="width: 100px; height: 100px"
+                      :src="item.url"></el-image>
+                  </div>
+                </el-form-item>
+                 <el-form-item label="视频内容：">
+                   <div v-for="(item, index) in props.row.content.videoList" :key="index">
+                    <video-child :videoUrl="item.url"></video-child>
+                   </div>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="teacherName"
             width="100"
@@ -80,10 +98,10 @@
                 type="danger"
                 style="margin-left:10px"
                 @click="handleDelete(scope.$index, scope.row)">删除</el-tag>
-              <el-tag
+              <!-- <el-tag
                 style="margin-left:10px"
                 type="success"
-                @click="handleClassCheck(scope.$index, scope.row)">打卡详情</el-tag>
+                @click="handleClassCheck(scope.$index, scope.row)">打卡详情</el-tag> -->
             </template>
           </el-table-column>
         </el-table>
@@ -93,9 +111,14 @@
 </template>
 
 <script>
+import { videoPlayer } from 'vue-video-player'
+
+import 'video.js/dist/video-js.css'
+
 import Header from '@/components/header'
 import Table from '@/components/table';
 import { getClassList, getClassCheck, getCheckComment, setGoodAnswer, setKeyProblem } from '@/API/class/index';
+import VideoChild from '@/components/VideoChild';
 
 export default {
   data() {
@@ -109,6 +132,7 @@ export default {
     }
   },
   components: {
+    VideoChild
     // Header
     // Table
   },
@@ -180,4 +204,16 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
 </style>
