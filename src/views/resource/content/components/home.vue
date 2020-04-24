@@ -2,7 +2,7 @@
     <div class="text_container">
         <breadcrumb>
           <template slot="title">资源管理 </template>
-          <template slot="secondTitle"> 内容管理</template>
+          <template slot="secondTitle"> 文字管理</template>
           <!-- <template slot="thirdlyTitle"> 新增情景</template> -->
         </breadcrumb>
         <Card>

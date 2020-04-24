@@ -13,12 +13,16 @@
                         </el-form-item>
                 <el-form-item label="视频上传:" >
                 <!-- action必选参数, 上传的地址 -->
+                <!-- "https://training.test.luojigou.vip/training/file/uploadFile" -->
+                <!-- http://upload.qiniup.com -->
+                <!-- 'https://upload-z2.qiniup.com' -->
                         <el-upload
                               v-if="!uploadForm.videoUrl" class="avatar-uploader el-upload--text"
                               :limit='1'
-                               action="https://training.test.luojigou.vip/training/file/uploadFile"
+                               action='https://up-z0.qiniup.com'
                                :show-file-list="false"
                                accept=".mp4"
+                               :data="form"
                                :on-success="handleVideoSuccess" 
                                :before-upload="beforeUploadVideo" 
                                :on-progress="uploadVideoProcess">
@@ -42,7 +46,7 @@
                     </el-form-item>
             </el-form>
                </template>
-            
+            a
           </Card>
           
     </div>
@@ -64,10 +68,11 @@ export default {
                 title: null,
                 videoUrl: null
             },
-            id: ''  // 视频id
+            id: '',  // 视频id
+            form: {}
         }
     },
-    methods: {
+    methods: {  
         // 修改视频
         async onEditVideo () {
             if (this.uploadForm.title === '' || this.uploadForm.videoUrl === '') {
@@ -87,13 +92,12 @@ export default {
             if (!this.id) {
                 return false
             }
-            const { data } = await getVideoInfo(this.id)
+            const { data } = await getVideoInfo(this.id) // getVideoInfo
             console.log(data)
             this.uploadForm = data.data
         },
         // 上传视频
         async onUpload () {
-            
             if (!this.rules) {
                 this.$message.error( '请完整填入视频信息' )
                 return false
@@ -110,40 +114,41 @@ export default {
         },
        //上传前回调
         async beforeUploadVideo (file) {
-            // console.log(file);
             
-            // var config = {
-            //     useCdnDomain: true,
-            //     region: null
-            // };
-            // const data = await getToken();
-   
-            // var observer = {
-            //   next(res){
-            //     // ...
-            //     console.log("====start=next===")
-            //     console.log(res.total.percent)
-            //     console.log("=====end=next==")
-            //     // toast.message=parseInt(res.total.percent)+"%";
-            //     this.$message({message: `${parseInt(res.total.percent)}'%'`})
-            //   },
-            //   error(err){
-            //     // ...
-            //     // Toast.fail('上传失败');
-            //     this.$message.error('上传失败')
-            //   }, 
-            //   complete(res){
-            //     console.log("====start=complete===")
-            //     console.log(res)
-            //     console.log("=====end=complete==")
-            //     this.videoForm.videoUrl = "https://training.test.luojigou.vip/"+res.hash;
-            //     this.$message({message: '上传成功',type: 'success'})
-            //   }
+            const fileType = file.type
+            const current = new Date().getTime()
+            const key = `video_${current}` // key为上传后文件名 必填
+            // const isLt20M = file.size / 1024 / 1024 < 20 // 算出文件大小
+            // this.fileSize = file.size // 存储文件大小
+            // if (!isLt20M) { // 这里我们限制文件大小为20M
+            //     this.$message.error('最大只能上传20M!')
+            //     this.$ref.upload.abort()
+            //     return isLt20M
             // }
-
-            // var observable = qiniu.upload(file.file, null, data.data, null, config)
-            // var subscription = observable.subscribe(observer)
-
+            if (fileType !== 'video/mp4') { // 限制文件类型
+                this.$ref.upload.abort()
+                this.$message.error('只能上传MP4格式视频!')
+                return false
+            }
+            try {
+               
+                
+                const { data } = await getToken()
+                console.log(data);
+                
+                const token = data.data
+                console.log(token);
+                 console.log(2);
+                this.form = {
+                    key,
+                    token,
+                }
+                return true
+            } catch (error) {
+                console.log(error);
+                
+                return error
+            }
         },
         //进度条
         uploadVideoProcess (event, file, fileList) {
@@ -154,11 +159,11 @@ export default {
             },
         //上传成功回调
         async handleVideoSuccess (res, file) {
-                console.log(res);
+                console.log(res,file );
                 
                 this.videoFlag = false;
                 this.videoUploadPercent = 0;
-                this.uploadForm.videoUrl = res.data
+                this.uploadForm.videoUrl = 'http://vote-teacher-video.luojigou.vip/'+res.hash
                 this.showVideoPath = false
                 console.log(this.uploadForm.videoUrl); 
             },

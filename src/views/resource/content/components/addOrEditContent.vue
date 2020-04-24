@@ -3,7 +3,7 @@
         <breadcrumb>
           <template slot="title">资源管理 </template>
           <template slot="secondTitle"> 内容管理</template>
-          <template slot="thirdlyTitle"> 新增内容</template>
+          <template slot="thirdlyTitle"> 新增文字</template>
         </breadcrumb>
         <Card>
             <template slot="content">

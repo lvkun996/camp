@@ -50,7 +50,7 @@
                                 <el-menu-item index="/text">
                                   <template slot="title">
                                       <i class="el-icon-document-copy"></i>
-                                      <span>内容管理</span>
+                                      <span>文字管理</span>
                                   </template>
                                 </el-menu-item>
                                 <el-menu-item index="/scene">

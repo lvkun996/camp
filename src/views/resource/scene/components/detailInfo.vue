@@ -10,7 +10,7 @@
                 <el-table >
                     <el-table-column label="状态" >
                     </el-table-column>
-                    <el-table-column label="内容">
+                    <el-table-column label="内容" >
                     </el-table-column>
                     <el-table-column label="操作">
                     </el-table-column>  
@@ -28,7 +28,7 @@
                             <!-- <i :class="element.fixed? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.fixed=! element.fixed" aria-hidden="true"></i> -->
                             <el-image v-if="element.contentType===1?true:false"  :src="element.content" style="width:50px;margin-left:400px"></el-image>
 
-                            <span v-if="element.contentType===0?true:false" class="content"  style="width:50px;margin-left:400px">{{element.content}}</span>
+                            <span v-if="element.contentType===0?true:false" class="content" >{{element.content}}</span>
     
                             <el-image v-if="element.contentType===3?true:false"  :src="element.content" style="width:50px;margin-left:400px"></el-image>
                             <el-tag type="danger"  class="tag" @click="deleteScene(index)">删除</el-tag>
@@ -80,7 +80,11 @@ export default {
             let params = {
                 id: this.id
             }
+            console.log(params);
+            
           const { data } = await detailInfo(params)
+          console.log(data);
+          
           this.receptionData = data.data.entityList.map( item =>  {
               if ( item.type === 1 ) {
                 this.$set( item, 'status', false )
@@ -134,6 +138,9 @@ export default {
     display: none;
 }
 .content {
+    display: inline-block;
+    margin-left:400px;
+    width: 310px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
