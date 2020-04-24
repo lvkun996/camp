@@ -14,15 +14,17 @@
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="图片内容：">
                   <div v-for="(item, index) in props.row.content.imgList" :key="index">
-                    <el-image
-                      style="width: 100px; height: 100px"
-                      :src="item.url"></el-image>
+                    <div class="img-wrap">
+                      <el-image
+                        fit="cover"
+                        :src="item.url"></el-image>
+                    </div>
                   </div>
                 </el-form-item>
                  <el-form-item label="视频内容：">
-                   <div v-for="(item, index) in props.row.content.videoList" :key="index">
+                  <div v-for="(item, index) in props.row.content.videoList" :key="index">
                     <video-child :videoUrl="item.url"></video-child>
-                   </div>
+                  </div>
                 </el-form-item>
               </el-form>
             </template>
@@ -98,6 +100,10 @@
                 type="danger"
                 style="margin-left:10px"
                 @click="handleDelete(scope.$index, scope.row)">删除</el-tag>
+                <el-tag
+                  type="info"
+                  style="margin-left:10px"
+                  @click="addReplay(scope.row)">老师回复</el-tag>
               <!-- <el-tag
                 style="margin-left:10px"
                 type="success"
@@ -105,6 +111,22 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <!-- <Pagination @currPage="accept" :total="total" /> -->
+        <el-dialog
+          title="操作"
+          :visible.sync="dialogVisible"
+          width="50%">
+          <el-form :model="comment">
+            <el-form-item label="老师名称" :label-width="formLabelWidth">
+              <el-input type="textarea" :autosize="{minRows: 5}" v-model="comment.content" placeholder="请输入老师回复" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="onSave">确 定</el-button>
+          </span>
+        </el-dialog>
       </template>
     </Card>
   </div>
@@ -117,7 +139,7 @@ import 'video.js/dist/video-js.css'
 
 import Header from '@/components/header'
 import Table from '@/components/table';
-import { getClassList, getClassCheck, getCheckComment, setGoodAnswer, setKeyProblem } from '@/API/class/index';
+import { getClassList, getClassCheck, getCheckComment, setGoodAnswer, setKeyProblem, saveReplay } from '@/API/class/index';
 import VideoChild from '@/components/VideoChild';
 
 export default {
@@ -127,8 +149,14 @@ export default {
         isPage: 1,
       },
       checkCommentList: [],
+      comment: {
+        clockInCommentId: '',
+        content: ''
+      },
       clazzId: '',
-      clockInId: ''
+      clockInId: '',
+      dialogVisible: false,
+      formLabelWidth: '120px'
     }
   },
   components: {
@@ -199,6 +227,36 @@ export default {
         this.$message.error(data.msg);
       }
     },
+    async handleReplay(index, item) {
+      const data = await saveTeachReplay({
+        clockInCommentId: this.id,
+        content: ''
+      });
+      if(data.status === 200) {
+        this.$message.success('回复成功');
+      } else {
+        this.$message.error(data.msg);
+      }
+    },
+    async onSave() {
+      const { data } = await saveReplay({
+        ...this.comment
+      });
+      if(data.status === 200) {
+        this.$message.success('添加成功');
+        this.loadCheckComment();
+        this.dialogVisible = false;
+      } else {
+        this.$message.error(data.msg);
+      }
+    },
+    addReplay(row) {
+      if(row) {
+        this.comment.clockInCommentId = row.id;
+        this.comment.content = '';
+        this.dialogVisible = true;
+      }
+    }
   }
 }
 </script>
@@ -215,5 +273,8 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 100%;
+}
+.img-wrap {
+  max-width: 200px;
 }
 </style>

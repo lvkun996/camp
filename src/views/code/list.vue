@@ -1,45 +1,28 @@
 <template>
   <div>
     <breadcrumb>
-      <template slot="title">班级管理 </template>
-      <template slot="secondTitle"> 班级列表</template>
+      <template slot="title">班级二维码 </template>
+      <template slot="secondTitle"> 二维码列表</template>
     </breadcrumb>
     <Card>
       <template slot="content">
-        <!-- <Header>
-          <template slot="button">新增老师</template>
-        </Header> -->
-        <el-button type="primary" @click="handleAdd">新增老师</el-button>
-
+        <el-button type="primary" @click="handleAdd">新增二维码</el-button>
         <el-table
-          :data="teachList"
+          :data="barCodeList"
           style="width: 100%">
           <el-table-column
-            prop="teacherName"
-            label="姓名"
+            prop="barCode"
+            label="二维码"
             width="180">
-          </el-table-column>
-          <el-table-column
-            prop="teacherUrl"
-            label="头像">
             <template slot-scope="scope">
-              <el-avatar :src="scope.row.teacherUrl"></el-avatar>
-              <!-- 
-              <el-image
-                :src="scope.row.teacherUrl"
-                fit="cover"></el-image> -->
+              <el-image :src="scope.row.barCode"></el-image>
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="日期"
-            width="180">
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button
+              <!-- <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
               <el-button
                 size="mini"
                 type="danger"
@@ -54,19 +37,17 @@
           :visible.sync="dialogVisible"
           width="50%"
           >
-          <el-form :model="teach">
-            <el-form-item label="老师名称" :label-width="formLabelWidth">
-              <el-input v-model="teach.teacherName" placeholder="输入老师名称" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="老师头像" :label-width="formLabelWidth">
+          <el-form :model="code">
+            <el-form-item label="上传二维码" :label-width="formLabelWidth">
               <el-upload
                 class="avatar-uploader"
+                :on-error="handleError"
                 :action="uploadServe"
                 :show-file-list="false"
                 :on-progress="handleProcess"
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload">
-                <img v-if="teach.teacherUrl" :src="teach.teacherUrl" class="avatar">
+                <img v-if="barCode" :src="barCode" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -78,7 +59,6 @@
           </span>
         </el-dialog>
       </template>
-
     </Card>
   </div>
 </template>
@@ -86,7 +66,7 @@
 <script>
 import Header from '@/components/header'
 import Table from '@/components/table';
-import { getTeachList, saveTeach, uptTeach, deleteTeach } from '@/API/class/index';
+import { getBarCodeList , saveBarCode, deleteCode } from '@/API/class/index';
 
 export default {
   data() {
@@ -94,16 +74,22 @@ export default {
       uploadServe: 'http://training.test.luojigou.vip/training/file/uploadFile',
       queryParams: {
         isPage: 1,
-        page: 1
+        page: 1,
+        pageSize: 10
       },
-      teach: {
-        teacherUrl: '',
-        name: ''
-      },
-      teachList: [],
+      // pagintion: {
+      //   isPage: 1,
+      //   page: 1
+      // },
+      classList: [],
+      barCodeList: [],
       total: 0,
       dialogVisible: false,
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      barCode: '',
+      code: {
+
+      }
     }
   },
   components: {
@@ -111,80 +97,78 @@ export default {
     // Table
   },
   created() {
-    this.loadClassList();
+    this.loadBarCodeList();
   },
   mounted() {
 
   },
   methods: {
     accept (page) {
-      console.log(page);
-      this.pagintion.page = page
-      this.queryParams.page = page;
+      this.queryParams.page = page
       this.loadClassList()
     },
-    async loadClassList() {
-      const { data } = await getTeachList({
+    async loadBarCodeList() {
+      const { data } = await getBarCodeList({
         ...this.queryParams
       });
-      this.teachList = data.data.entityList || [];
-      this.total = data.data.total
+      this.barCodeList = data.data.entityList || []
+      this.total = data.data.total;
     },
     handleEdit(index, row) {
-      this.dialogVisible = true;
-      this.teach = row;
-      console.log(index, row);
+      console.log(index, row)
     },
     async handleDelete(index, row) {
-      const { data } = await deleteTeach(row.id);
-      if(data.status === 200) {
-        this.$message.success( {message: '删除成功'} );
-        this.loadClassList();
-      }
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const { data } = await deleteCode(row.id);
+        if(data.status === 200) {
+          this.$message.success( {message: '删除成功'} );
+          this.loadBarCodeList();
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+      
+    },
+    handleClassCheck(index, row) {
+      this.$router.push({ path: '/class/check', query: { activityItemId: row.activityItemId, clazzId: row.id } })
     },
     handleAdd() {
-      this.teach = {};
       this.dialogVisible = true;
     },
     async onSave() {
-      if(this.teach.id) {
-        this.handleUpt();
-      } else {
-        this.handleSave();
-      }
-    },
-    async handleUpt() {
-      const { data } = await uptTeach({
-        ...this.teach
+      const { data } = await saveBarCode({
+        barCode: this.barCode
       });
       if(data.status === 200) {
         this.$message.success( {message: '上传成功'} )
         this.dialogVisible = false;
-        this.loadClassList();
-      } else {
-        this.$message.error( {message: '上传失败'} )
-      }
-    },
-    async handleSave() {
-      const { data } = await saveTeach({
-        ...this.teach
-      });
-      if(data.status === 200) {
-        this.$message.success( {message: '上传成功'} )
-        this.dialogVisible = false;
-        this.loadClassList();
+        this.loadBarCodeList();
       } else {
         this.$message.error( {message: '上传失败'} )
       }
     },
     handleSuccess(res, file) {
-      this.teach.teacherUrl = res.data;
+      if(res.status === 200) {
+        this.barCode = res.data;
+      } else {
+        this.$message.error(data.msg)
+      }
     },
     beforeUpload() {
       
     },
     handleProcess() {
 
+    },
+    handleError(err, file, fileList) {
+      console.log(err);
     }
   }
 }

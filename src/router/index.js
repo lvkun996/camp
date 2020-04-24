@@ -196,6 +196,19 @@ const routes = [
             props: true
           },
         ]
+      },
+      {
+        path: '/code',
+        name: 'BarCode',
+        component: () => import('@/views/code/index'),
+        children: [
+          {
+            path: 'list',
+            name: 'TeachList',
+            component: () => import('@/views/code/list'),
+            props: true
+          },
+        ]
       }
     ]
   }

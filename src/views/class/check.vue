@@ -92,7 +92,7 @@ export default {
       console.log(index, row)
     },
     handleDelete(index, row) {
-      console.log(index, row)
+      
     },
     handleClassCheck(index, row) {
       this.$router.push({ path: '/class/check/comment', query: { clazzId: this.clazzId, clockInId: row.id } })

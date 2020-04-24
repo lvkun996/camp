@@ -132,5 +132,8 @@ export default {
     .vjs-poster {
       background-size: cover;
     }
-  } 
+  }
+  .video-wrap {
+    width: 300px;
+  }
 </style>
