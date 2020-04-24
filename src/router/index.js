@@ -156,12 +156,43 @@ const routes = [
       {
         path: '/class',
         name: 'class',
-        // component: () => import('@/views/class'),
+        component: () => import('@/views/class'),
         children: [
           {
-            path: '/list',
+            path: 'list',
             name: 'ClassList',
-            component: () => import('@/views/class/list.vue'),
+            component: () => import('@/views/class/list'),
+            props: true
+          },
+          {
+            path: 'check',
+            name: 'ClassCheck',
+            component: () => import('@/views/class/check'),
+            props: true
+          },
+          {
+            path: 'check/comment',
+            name: 'CheckComment',
+            component: () => import('@/views/class/CheckComment'),
+            props: true
+          },
+          {
+            path: 'check/comment/detail',
+            name: 'CommentDetail',
+            component: () => import('@/views/class/CommentDetail'),
+            props: true
+          },
+        ]
+      },
+      {
+        path: '/teach',
+        name: 'Teach',
+        component: () => import('@/views/teach'),
+        children: [
+          {
+            path: 'list',
+            name: 'TeachList',
+            component: () => import('@/views/teach/list'),
             props: true
           },
         ]

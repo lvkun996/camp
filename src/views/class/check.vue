@@ -2,30 +2,23 @@
   <div>
     <breadcrumb>
       <template slot="title">班级管理 </template>
-      <template slot="secondTitle"> 班级列表</template>
+      <template slot="secondTitle"> 班级打卡</template>
     </breadcrumb>
     <Card>
       <template slot="content">
         <el-table
-          :data="classList"
+          :data="checkList"
           style="width: 100%">
           <el-table-column
             prop="teacherName"
-            label="班级信息">
+            label="课后作业">
             <template slot-scope="scope">
-              {{ scope.row.activityItemId }} 期 {{ scope.row.number}} 班
+              第{{ scope.row.sort}} 天
             </template>
           </el-table-column>
           <el-table-column
-            prop="teacherName"
-            label="老师姓名">
-          </el-table-column>
-          <el-table-column
-            prop="teacherUrl"
-            label="老师头像">
-            <template slot-scope="scope">
-              <el-avatar :src="scope.row.teacherUrl"></el-avatar>
-            </template>
+            prop="content"
+            label="作业内容">
           </el-table-column>
           <el-table-column
             prop="createTime"
@@ -34,8 +27,8 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-tag
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-tag>
+              <!-- <el-tag
+                @click="handleEdit(scope.$index, scope.row)">编辑</el-tag> -->
               <el-tag
                 type="danger"
                 style="margin-left:10px"
@@ -43,7 +36,7 @@
               <el-tag
                 style="margin-left:10px"
                 type="success"
-                @click="handleClassCheck(scope.$index, scope.row)">班级打卡</el-tag>
+                @click="handleClassCheck(scope.$index, scope.row)">课后打卡</el-tag>
             </template>
           </el-table-column>
         </el-table>
@@ -55,15 +48,17 @@
 <script>
 import Header from '@/components/header'
 import Table from '@/components/table';
-import { getClassList } from '@/API/class/index';
+import { getClassList, getClassCheck } from '@/API/class/index';
 
 export default {
   data() {
     return {
       queryParams: {
-        isPage: 1
+        isPage: 0,
       },
-      classList: [],
+      checkList: [],
+      activityItemId: '',
+      clazzId: ''
     }
   },
   components: {
@@ -71,18 +66,27 @@ export default {
     // Table
   },
   created() {
-    this.loadClassList();
+    const activityItemId = this.$route.query.activityItemId || '';
+    const clazzId = this.$route.query.clazzId || '';
+
+    if(activityItemId) {
+      this.activityItemId = activityItemId;
+      this.clazzId = clazzId;
+      this.loadClassCheck();
+    }
   },
   mounted() {
 
   },
   methods: {
-    async loadClassList() {
-      const { data } = await getClassList({
-        ...this.queryParams
+    async loadClassCheck() {
+      const { data } = await getClassCheck({
+        ...this.queryParams,
+        activityItemId: this.activityItemId
       });
-      this.classList = data.data.entityList || []
-      console.log(this.classList);
+      if(data.status === 200 ) {
+        this.checkList = data.data || [];
+      }
     },
     handleEdit(index, row) {
       console.log(index, row)
@@ -91,12 +95,11 @@ export default {
       console.log(index, row)
     },
     handleClassCheck(index, row) {
-      this.$router.push({ path: '/class/check', query: { activityItemId: row.activityItemId, clazzId: row.id } })
+      this.$router.push({ path: '/class/check/comment', query: { clazzId: this.clazzId, clockInId: row.id } })
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-
 </style>
