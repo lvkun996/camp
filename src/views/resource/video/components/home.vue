@@ -9,19 +9,25 @@
                 <Header>
                      <template slot="button">新增视频</template>
                 </Header>
-                <Table :tableStyle="tableStyle" :tableData="videoData">
-                    <template slot="videoNumber" >视频数量{{total}}条</template>
-                    <template slot="header">图文详情</template>
-                    <!-- <template slot="resourceBtn" scope="val" >
-                        <el-tag type="success" @click="goResourceVideo(val)">视频管理</el-tag>
-                    </template> -->
-                    <template slot="editBtn" scope="val" >
-                        <el-tag @click="goEditVideo(val)">编辑</el-tag>
+                <el-table :data="videoData" >
+                  <el-table-column label="视频名称" width-label="180px" prop="title">
+                  </el-table-column>
+                  <el-table-column label="视频封面" width-label="180px">
+                      <template slot-scope="scope">
+                        <el-image :src="scope.row.videoUrl"></el-image>
+                      </template>
+                  </el-table-column>
+                  <el-table-column label="创建时间" width-label="180px" prop="createTime">
+                  </el-table-column>
+                  <el-table-column label="操作" width-label="180px">
+                    <template slot-scope="scope">
+                      <div class="tag">
+                         <el-tag  @click="goEditVideo(scope.row)">编辑</el-tag>
+                          <el-tag type="danger" @click="onDeleteVideo(scope.row)">删除</el-tag>
+                      </div>
                     </template>
-                    <template slot="deleteBtn" scope="val" >
-                        <el-tag type="danger" @click="onDeleteVideo(val)">删除</el-tag>
-                    </template>
-                </Table>
+                  </el-table-column>
+                </el-table>
                 <div class="page">
                    <Pagination @currPage="accept"  :total="total"/>
                 </div>
@@ -32,7 +38,7 @@
 
 <script>
 import Header from '@/components/header'
-import Table from '@/components/table'
+// import Table from '@/components/table'
 import { getVideoList , deleteVideo } from '@/API/resource/video'
 export default {
   name: 'videoPage',
@@ -67,14 +73,14 @@ export default {
       this.$router.push({
         path: '/newVideo',
         query: {
-          value: val.single
+          editVideoId: val.id
         }
       })
     },
     // 删除视频
     async onDeleteVideo (value) {
      try {
-       await deleteVideo(value.single.id)
+       await deleteVideo(value.id)
        this.$message({message:'删除成功', type: 'success'})
        this.onGetVideoList()
      } catch (error) {
@@ -96,7 +102,7 @@ export default {
   },
   components: {
     Header,
-    Table
+    // Table
   },
   created () {
     this.onGetVideoList()
@@ -114,5 +120,17 @@ export default {
 }
 .page{
   text-align: center;
+}
+.el-image{
+  width: 80px;
+  height: 80px;
+}
+/deep/ .el-image__inner{
+  object-fit: cover;
+}
+.tag{
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

@@ -9,16 +9,28 @@
                 <Header>
                      <template slot="button">新增图片</template>
                 </Header>
-                <Table :tableStyle="tableStyle" :tableData="pictureData">
-                    <template slot="videoNumber" >图片数量{{total}}张</template>
-                    <template slot="header">图文详情</template>
-                    <template slot="editBtn" scope="val" >
-                        <el-tag @click="goEditPicture(val)">编辑</el-tag>
-                    </template>
-                    <template slot="deleteBtn" scope="val" >
-                        <el-tag type="danger" @click="onDeletePicture(val)">删除</el-tag>
-                    </template>
-                </Table>
+                <el-table :data="pictureData">
+                    <el-table-column label="图片名称" width-label="180px" prop="title">
+                    </el-table-column>
+                    <el-table-column label="图片" width-label="180px" >
+                        <template slot-scope="scope">
+                            <el-image  :src="scope.row.imgUrl"></el-image>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="创建时间" width-label="180px" prop="createTime">
+                    </el-table-column>
+                    <el-table-column label="操作" width-label="180px" >
+                        <template  slot-scope="scope" >
+                            <div class="tag">
+                                <el-tag @click="goEditPicture(scope.row)">编辑</el-tag>
+                                <el-tag type="danger" @click="onDeletePicture(scope.row)">删除</el-tag>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                
+
+
                 <div class="page">
                    <Pagination @currPage="accept"  :total="total"/>
                 </div>
@@ -29,7 +41,7 @@
 
 <script>
 import Header from '@/components/header'
-import Table from '@/components/table'
+// import Table from '@/components/table'
 import { getPictureList , deletePicture} from '@/API/resource/picture.js'
 export default {
  name: 'picturePage',
@@ -50,7 +62,7 @@ export default {
           isPage: 1,
           page: 1
         },
-        total: ''
+        total: 0
      }
  },
 
@@ -63,7 +75,7 @@ export default {
     //  删除图片
     async onDeletePicture (val) {
         try {
-            await deletePicture(val.single.id)
+            await deletePicture(val.id)
             this.$message({message: '删除成功', type: 'success'})
             this.initPictureList()   
         } catch (error) {
@@ -75,7 +87,7 @@ export default {
         this.$router.push({
             path: '/addOrEditPic',
             query: {
-                id: val.single.id
+                id: val.id
             }
         })
     },
@@ -89,7 +101,7 @@ export default {
  },
  components: {
      Header,
-     Table
+    //  Table
  },
  created () {
      this.initPictureList()
@@ -99,5 +111,19 @@ export default {
 <style scoped lang="less">
 .page {
     text-align: center;
+}
+.el-image{
+    width: 80px;
+    height: 80px;
+    
+
+}
+/deep/ .el-image__inner{
+    object-fit: cover;
+}
+.tag{
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
 }
 </style>

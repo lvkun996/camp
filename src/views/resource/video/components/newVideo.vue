@@ -28,14 +28,9 @@
                                :on-progress="uploadVideoProcess">
                             <i  v-if="!uploadForm.videoUrl" class="el-icon-plus avatar-uploader-icon"></i>
                         <div class="uploadText"> 点击红色区域上传视频</div>
-                        
-                        <!-- <el-button class="video-btn"slot="trigger" size="small" v-if="isShowUploadVideo"type="primary">选取文件</el-button> -->
                     </el-upload>  
                      <video v-else :src="uploadForm.videoUrl" class="avatar video-avatar" controls="controls">您的浏览器不支持视频播放</video> 
-                    <!-- v-if="videoFlag === true"  -->
-                    <el-progress type="circle" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
-                   
-                         <!--   -->
+                    <el-progress  v-if="videoFlag"  type="circle" :color="customColorMethod" :percentage="videoUploadPercent" style="margin-top:30px;"></el-progress>
                     <P v-if="isShowUploadVideo"
                        class="text">请保证视频格式正确，且不超过20M</P>
                 </el-form-item>
@@ -46,7 +41,6 @@
                     </el-form-item>
             </el-form>
                </template>
-            a
           </Card>
           
     </div>
@@ -69,10 +63,20 @@ export default {
                 videoUrl: null
             },
             id: '',  // 视频id
-            form: {}
+            form: {},
         }
     },
     methods: {  
+        // 进度条颜色
+        customColorMethod(percentage) {
+        if (percentage < 30) {
+          return '#909399';
+        } else if (percentage < 70) {
+          return '#e6a23c';
+        } else {
+          return '#67c23a';
+        }
+      },
         // 修改视频
         async onEditVideo () {
             if (this.uploadForm.title === '' || this.uploadForm.videoUrl === '') {
@@ -82,6 +86,9 @@ export default {
             try {
                 await editVideo(this.uploadForm)
                 this.$message({message: '修改成功', type: 'success'})
+                this.$router.push({
+                    path: '/video'
+                })
                 this.uploadForm = {}
             } catch (error) {
                 this.$message.error('修改失败')
@@ -114,58 +121,40 @@ export default {
         },
        //上传前回调
         async beforeUploadVideo (file) {
-            
             const fileType = file.type
             const current = new Date().getTime()
-            const key = `video_${current}` // key为上传后文件名 必填
-            // const isLt20M = file.size / 1024 / 1024 < 20 // 算出文件大小
-            // this.fileSize = file.size // 存储文件大小
-            // if (!isLt20M) { // 这里我们限制文件大小为20M
-            //     this.$message.error('最大只能上传20M!')
-            //     this.$ref.upload.abort()
-            //     return isLt20M
-            // }
+            // const key = null // key为上传后文件名 必填
             if (fileType !== 'video/mp4') { // 限制文件类型
                 this.$ref.upload.abort()
                 this.$message.error('只能上传MP4格式视频!')
                 return false
             }
             try {
-               
-                
                 const { data } = await getToken()
-                console.log(data);
-                
                 const token = data.data
-                console.log(token);
-                 console.log(2);
                 this.form = {
-                    key,
+                    // key,
                     token,
                 }
                 return true
             } catch (error) {
                 console.log(error);
-                
                 return error
             }
         },
         //进度条
         uploadVideoProcess (event, file, fileList) {
-            console.log(event, file, fileList);
                 this.videoFlag = true;
-                console.log(file.percentage.toFixed(0) * 1);
                 this.videoUploadPercent = file.percentage.toFixed(0) * 1;
             },
         //上传成功回调
         async handleVideoSuccess (res, file) {
-                console.log(res,file );
-                
+            console.log(res);
+            
                 this.videoFlag = false;
                 this.videoUploadPercent = 0;
-                this.uploadForm.videoUrl = 'http://vote-teacher-video.luojigou.vip/'+res.hash
+                this.uploadForm.videoUrl = 'http://res.training.luojigou.vip/'+res.hash
                 this.showVideoPath = false
-                console.log(this.uploadForm.videoUrl); 
             },
         },
         computed: {
@@ -176,10 +165,10 @@ export default {
             }
         },
         created () {
-            if (!this.$route.query.value) {
+            if (!this.$route.query.editVideoId) {
                 return false
             }
-            this.id = this.$route.query.value.id
+            this.id = this.$route.query.editVideoId
             this.initVideoInfo()
         }
 }
@@ -222,5 +211,14 @@ export default {
 .uploadText{
     position: relative;
     top: -50px;
+}
+// .progress{
+   
+// }
+.el-progress{
+    position: absolute;
+    top: 10px;
+    left: 600px;
+   
 }
 </style>

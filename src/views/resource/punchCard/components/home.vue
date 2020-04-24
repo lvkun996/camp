@@ -10,17 +10,22 @@
                   <template  slot="button">新增打卡</template>
                   <!-- <template slot="button"><el-button @click="onGoNew" type="primary"></el-button></template> -->
                 </Header>
-                <Table :tableStyle="tableStyle" :tableData="cardData">
-                    <template slot="videoNumber" >打卡数量{{total}}条</template>
-                    <template slot="header">图文详情</template>
+                <el-table :data="cardData">
+                  <el-table-column label="内容" width-label="180px" prop="content">
 
-                    <template slot="editBtn" scope="val" >
-                        <el-tag @click="goEditCard(val)">编辑</el-tag>
+                  </el-table-column>
+                  <el-table-column label="创建时间" width-label="180px" prop="createTime">
+
+                  </el-table-column>
+                  <el-table-column label="操作" width-label="180px">
+                    <template slot-scope="scope">
+                      <div class="tag">
+                        <el-tag @click="goEditCard(scope.row)">编辑</el-tag>
+                        <el-tag type="danger" @click="onDeleteCardTask(scope.row)">删除</el-tag>
+                      </div>
                     </template>
-                    <template slot="deleteBtn" scope="val" >
-                        <el-tag type="danger" @click="onDeleteCardTask(val)">删除</el-tag>
-                    </template>
-                </Table>
+                  </el-table-column>
+                </el-table>
                 <div class="page">
                   <Pagination @currPage="accept"  :total="total"/>
                 </div>
@@ -39,11 +44,6 @@ export default {
   name: 'punchCardPage',
   data () {
     return {
-      tableStyle: { // 动态控制table 得 leble
-        label2: '内容',
-        label3: '创建时间',
-        label4: '操作'
-      },
       cardData: [],
       pagintion: {
         isPage: 1,
@@ -67,14 +67,14 @@ export default {
       this.$router.push( {
         path: '/newPunchCard',
         query: {
-          id: val.single.id
+          id: val.id
         }
       })
     },
     // 删除打卡接口
     async onDeleteCardTask (val) {
       try {
-        await deletePunchCardTask(val.single.id)
+        await deletePunchCardTask(val.id)
         this.$message({message:'删除成功', type: 'success'})
           this.initPunchCardList()
       } catch (error) {
@@ -94,7 +94,6 @@ export default {
   },
   components: {
     Header,
-    Table
   }
 }
 </script>
@@ -102,5 +101,10 @@ export default {
 <style lang="less" scoped>
 .page{
   text-align: center;
+}
+.tag{
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

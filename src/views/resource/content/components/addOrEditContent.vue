@@ -61,7 +61,9 @@ export default {
         this.$refs.ruleForm.validate( async valid => {
             if (valid) {
                 try {
-                    await addContent(this.text)
+                 const { data } =  await addContent(this.text)
+                 console.log(data);
+                 
                     this.$message({message: '新增成功', type: 'success'})
                     this.text = {}
                 } catch (error) {

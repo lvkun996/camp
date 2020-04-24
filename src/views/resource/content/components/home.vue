@@ -3,27 +3,38 @@
         <breadcrumb>
           <template slot="title">资源管理 </template>
           <template slot="secondTitle"> 文字管理</template>
-          <!-- <template slot="thirdlyTitle"> 新增情景</template> -->
         </breadcrumb>
         <Card>
             <template slot="content">
                 <Header>
                      <template slot="button">新增内容</template>
                 </Header>
-                <Table :tableStyle="tableStyle" :tableData="contentList">
-                    <template slot="videoNumber" >视频数量161条</template>
-                    <template slot="header">图文详情</template>
-                    <!-- <template slot="resourceBtn" scope="val" >
-                        <el-tag type="success" @click="goResourceVideo(val)">视频管理</el-tag>
-                    </template> -->
-                    <template slot="editBtn" scope="val" >
-                        <el-tag @click="goEditContent(val)">编辑</el-tag>
-                    </template>
-                    <template slot="deleteBtn" scope="val" >
-                        <el-tag type="danger" @click="onDeleteContent(val)">删除</el-tag>
-                    </template>
-                </Table>
-                 <Pagination @currPage="accept" :total="total"/>
+                <el-table :data="contentList">
+                    <el-table-column label="名称" width_label="180px" prop="title">
+
+                    </el-table-column>
+                    <el-table-column label="内容" width_label="180px" >
+                        <template slot-scope="scope">
+                            <span class="content">{{scope.row.content}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="创建时间" width_label="180px" prop="createTime">
+
+                    </el-table-column>
+                    <el-table-column label="操作" width_label="180px">
+                         <template slot-scope="scope" >
+                             <div class="tag">
+                                <el-tag @click="goEditContent(scope.row)">编辑</el-tag>
+                                <el-tag type="danger" @click="onDeleteContent(scope.row)">删除</el-tag>
+                             </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <div class="page">
+                    <Pagination @currPage="accept" :total="total"/>
+                </div>
+                 
             </template>
         </Card>
     </div>
@@ -31,7 +42,6 @@
 
 <script>
 import Header from '@/components/header'
-import Table from '@/components/table'
 import { getContent ,deleteContent } from '@/API/resource/content.js'
 
 export default {
@@ -43,18 +53,12 @@ export default {
     },
     data () {
         return {
-            tableStyle: { // 动态控制table 得 leble
-                label1: '名称',
-                label2: '内容',
-                label3: '创建时间',
-                label4: '操作'
-            },
             contentList:[],
             pagintion: {
               isPage: 1,
               page: 1
               },
-            total: ''
+            total: 0
         }
     },
     methods: {
@@ -89,8 +93,7 @@ export default {
         }
     },
     components: {
-        Header,
-        Table
+        Header
     },
     created () {
         this.initContentList()
@@ -98,5 +101,17 @@ export default {
 }
 </script>
 <style scoped lang="less">
-
+.page{
+    text-align: center;
+}
+.content{
+    overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap
+}
+.tag{
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
+}
 </style>

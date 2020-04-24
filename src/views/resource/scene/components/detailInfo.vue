@@ -8,30 +8,30 @@
         <Card>
             <template slot="content">
                 <el-table >
-                    <el-table-column label="状态" >
+                    <el-table-column label="老师or学生" width-label="100px">
                     </el-table-column>
                     <el-table-column label="内容" >
                     </el-table-column>
+                    <el-table-column label="创建时间" >
+                    </el-table-column>
                     <el-table-column label="操作">
-                    </el-table-column>  
+                    </el-table-column>
                 </el-table>
                 <draggable v-model="receptionData" :options="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
                     <transition-group type="transition" :name="'flip-list'">
                         <li class="list-group-item" v-for="(element,index) in receptionData" :key="index">
-                            <el-switch
-                                v-model="element.status"
-                                active-color="#13ce66"
-                                inactive-color="#ff4949"
-                                class="switch"
-                                :key="element.id">
-                            </el-switch>
-                            <!-- <i :class="element.fixed? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'" @click=" element.fixed=! element.fixed" aria-hidden="true"></i> -->
-                            <el-image v-if="element.contentType===1?true:false"  :src="element.content" style="width:50px;margin-left:400px"></el-image>
-
-                            <span v-if="element.contentType===0?true:false" class="content" >{{element.content}}</span>
-    
-                            <el-image v-if="element.contentType===3?true:false"  :src="element.content" style="width:50px;margin-left:400px"></el-image>
-                            <el-tag type="danger"  class="tag" @click="deleteScene(index)">删除</el-tag>
+                            <div class="swtich">
+                                <el-switch  v-model="element.status"   active-color="#13ce66" inactive-color="#ff4949"  :key="element.id">
+                                </el-switch>
+                            </div>
+                            <div class="content">
+                                 <el-image v-if="element.contentType===1?true:false"  :src="element.content" ></el-image>
+                                <span v-if="element.contentType===0?true:false" class="content" >{{element.content}}</span>
+                                <el-image v-if="element.contentType===3?true:false"  :src="element.content" ></el-image>
+                            </div>
+                           
+                            <div> {{element.createTime}} </div>
+                            <el-tag type="danger"  class="tag" @click="deleteScene(element)">删除</el-tag>
                         </li>
                     </transition-group>
                 </draggable>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { detailInfo , editAllContent} from '@/API/resource/course.js'
+import { detailInfo , editAllContent , deleteCourseItem} from '@/API/resource/course.js'
 import draggable from "vuedraggable"
 export default {
     name: 'detatilInfoPage',
@@ -57,6 +57,13 @@ export default {
         }
     },
     methods: {
+        // 删除情景流程
+        async deleteScene (element) {
+            console.log(element);
+         const { data } = await deleteCourseItem(element.id)
+         console.log(data);
+            this.initClassList()
+        },
         async onEditAllContent () {
             console.log(this.receptionData);
             for ( var i = 0 ;  i < this.receptionData.length ; i++   ) {
@@ -128,21 +135,33 @@ export default {
 </script>
 <style scoped lang="less">
 .list-group-item{
-    position: relative;
+    // position: relative;
+    display: flex;
+    // flex-wrap: wrap;
+    // justify-content: space-between;
 }
 .tag{
-    position: absolute;
-    left: 1100px;
+    width: 45px;
 }
 /deep/ .el-table__empty-block{
     display: none;
 }
 .content {
     display: inline-block;
-    margin-left:400px;
+    // margin-left:400px;
     width: 310px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
+}
+.el-image{
+    width: 40px;
+    height: 40px;
+}
+/deep/ .el-image__inner{
+    object-fit: cover;
+}
+.swtich{
+    width: 50px;
 }
 </style>

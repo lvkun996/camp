@@ -23,11 +23,12 @@
                           background-color="#333744"
                           text-color="#fff"
                           active-text-color="rgb(64, 158, 255)"
-
                           :collapse="collapse"
                           :collapse-transition='false'
                           router
+                          :default-active="$route.path" 
                           >
+                            <!-- -->
                           <!--     :default-active="indexStatus" -->
                              <el-submenu index="1">
                               <template slot="title">
@@ -131,7 +132,8 @@ export default {
   name: 'homePage',
   data () {
     return {
-      collapse: false
+      collapse: false,
+      indexStatus: ''
     }
   }
 }

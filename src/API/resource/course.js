@@ -29,3 +29,6 @@ export const editAllContent = params => createAPI('/admin/course/courseItem', 'P
 
 // 删除课程内容
 export const deleteCourseItem = params => createAPI(`/admin/courseItem/${params}`, 'DELETE')
+
+// 根据id 删除课程
+export const reasonIdDeleteCourse = params => createAPI(`/admin/course/${params}`, 'DELETE')

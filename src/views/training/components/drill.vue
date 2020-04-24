@@ -9,20 +9,30 @@
                 <Header>
                      <template slot="button">新增训练营</template>
                 </Header>
-                <Table :tableStyle="tableStyle" :tableData="drillData">
-                    <template slot="videoNumber" >训练营数量{{total}}</template>
-                    <template slot="header">图文详情</template>
-                    <el-button slot="editBtn">增加</el-button>
-                    <template slot="resourceBtn" scope="val" >
-                        <el-tag type="success" @click="goResourceDrill(val)">营期管理</el-tag>
+                <el-table :data="drillData">
+                  <el-table-column label="训练营名称" width-label="180px" prop="title">
+
+                  </el-table-column>
+                  <el-table-column label="训练营封面" width-label="180px" prop="title">
+                    <template slot-scope="scope">
+                      <el-image  :src="scope.row.imgUrl"></el-image>
                     </template>
-                    <template slot="editBtn" scope="val" >
-                        <el-tag @click="goEditDrill(val)">编辑</el-tag>
+                  </el-table-column>
+                  <el-table-column label="营期数" width-label="180px" prop="days">
+
+                  </el-table-column>
+                  <el-table-column label="创建时间" width-label="180px" prop="createTime">
+
+                  </el-table-column>
+                  <el-table-column label="操作" width-label="180px" >
+                    <template slot-scope="scope">
+                      <div class="tag">
+                        <el-tag @click="goEditDrill(scope.row)">编辑</el-tag>
+                        <el-tag type="danger" @click="onDeleteDrill(scope.row)">删除</el-tag>
+                      </div>
                     </template>
-                    <template slot="deleteBtn" scope="val" >
-                        <el-tag type="danger" @click="onDeleteDrill(val)">删除</el-tag>
-                    </template>
-                </Table>
+                  </el-table-column>
+                </el-table>
                 <div class="page">
                    <Pagination @currPage="accept"  :total="total"/>
                 </div>
@@ -32,7 +42,6 @@
 </template>
 <script>
 import Header from '@/components/header'
-import Table from '@/components/table'
 
 import { getDirll , deleteDrill} from '@/API/training/drill'
 export default {
@@ -44,12 +53,6 @@ export default {
   },
   data () {
     return {
-      tableStyle: { // 动态控制table 的 leble
-        label1: '训练营名称',
-        label2: '营期数',
-        label3: '报名人数',
-        label4: '操作'
-      },
       drillData: [],
       pagintion: {
         isPage: 1,
@@ -101,8 +104,7 @@ export default {
     }
   },
   components: {
-    Header,
-    Table
+    Header
   },
   created () {
 
@@ -114,4 +116,12 @@ export default {
 .page{
   text-align: center;
 }
+.el-image{
+  width: 80px;
+  height: 80px;
+}
+.el-image__inner{
+  object-fit: cover;
+}
+
 </style>

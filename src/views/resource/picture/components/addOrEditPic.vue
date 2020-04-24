@@ -7,33 +7,32 @@
         </breadcrumb>
         <Card>
             <template slot="content">
-                <el-form>
-                    <el-form-item label="图片名称:">
-                        <el-input v-model="pictureForm.title" :disabled="!pictureForm.id"></el-input>
+                <el-form :model="pictureForm" :rules="rules" ref="myForm">
+                    <el-form-item label="图片名称:" prop="title">
+                        <el-input v-model="pictureForm.title" ></el-input>
                     </el-form-item>
-                    <el-form-item label="图片展示:" v-if="pictureForm.id">
+                    <el-form-item label="图片展示:" prop="imgUrl">
                         <template v-if="pictureForm.imgUrl">
                            <el-image :src="pictureForm.imgUrl" style="width:146px;height:146px"></el-image>
                         </template>
                     </el-form-item>
+                    <!-- http://training.test.luojigou.vip/training/file/uploadFile -->
                     <el-form-item label="上传图片:">
                         <el-upload
                         ref="myUpload"
-                          action="https://training.test.luojigou.vip/training/file/uploadFile"
+                          action="https://up-z0.qiniup.com"
                           list-type="picture-card"
                           :on-preview="handlePictureCardPreview"
                           :on-remove="handleRemove"
                           :on-success="handlePictureSuccess"
                           :on-change="handleImgUrlChange"
-                          :file-list='fileList'
-                          :limit='pictureForm.id?1:10'
+                          :before-upload="beforeUploadPicture" 
+                          :limit='1'
+                          :data="uploadToken"
                           >
                             <i class="el-icon-plus"></i>
                             <div class="hintText">点击这里上传哦</div>
                         </el-upload>
-                        <!-- <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="dialogImageUrl" alt="">
-                        </el-dialog>   -->
                     </el-form-item>
                     <el-form-item>
                         <el-button  type="danger" class="deletePic" v-if="pictureForm.id" @click="pictureForm.imgUrl = ''">删除图片</el-button>
@@ -48,6 +47,8 @@
 
 <script>
 import { addPicture , getPictureInfo , editPictureInfo} from '@/API/resource/picture.js'
+import { getToken } from '@/API/resource/upload.js'
+import * as qiniu from 'qiniu-js';
 export default {
     name: 'addOrEditPicPage',
     data () {
@@ -57,8 +58,16 @@ export default {
                 title: '',
                 imgUrl: ''
             },
+            rules: {
+                title: [ { required: true, message: '请输入活动名称', trigger: 'blur' }],
+                imgUrl: [ { required: true, message: '请输入活动名称', trigger: 'blur' }]
+            },
             fileList: [],
-            uploadArr: []
+            uploadArr: [],
+            uploadToken:{
+                key:'',
+                token:''
+            }
         }
     },
     methods: {
@@ -86,41 +95,19 @@ export default {
         },
         // 图片上传
         async onUploadPicture () {
-            if (this.uploadArr.length === 0) {
-                this.$message({message: '需要选择图片哦', type: 'error'})
-                return false
-            }
-            try {
-                console.log(this.uploadArr);
-                
-                for( var i = 0 ; i < this.uploadArr.length; i++){
-                    await addPicture(this.uploadArr[i])
+            this.$refs.myForm.validate( async valid =>  {
+                if ( valid ) {
+                     try {
+                        await addPicture(this.pictureForm)
+                        this.pictureForm = {}
+                        this.$refs.myUpload.clearFiles()
+                        this.$message({message: '上传成功', type: 'success'})
+                    } catch (error) {
+                        this.$message.error('上传失败') 
+                    }
                 }
-                this.uploadArr = []
-                this.pictureForm = {}
-                this.$refs.myUpload.clearFiles()
-                this.$message({message: '上传成功', type: 'success'})
-            } catch (error) {
-               this.$message.error('上传失败') 
-            }
+            })
         },
-        // notify 通知
-        open1() {
-
-         const h = this.$createElement;
-
-         this.$notify({
-         title: '上传提示',
-         message: h('i', { style: 'color: teal'}, '最多只能上传十张图片哦,上传成功自动添加名称')})
-         },
-        open2() {
-
-         const h = this.$createElement;
-
-         this.$notify({
-         title: '上传提示',
-         message: h('i', { style: 'color: teal'}, '修改图片只能上传一张图片哦')})
-         },
         // 文件预览
         handlePictureCardPreview () {
 
@@ -131,15 +118,42 @@ export default {
            this.pictureForm.imgUrl = ''
            this.fileList = []
         },
+        // 文件上传之前
+        async beforeUploadPicture (file) {
+            const isPNG = file.type === "image/png";
+            const isJPEG = file.type === "image/jpeg";
+            const isJPG = file.type === "image/jpg";
+            if (!isPNG && !isJPEG && !isJPG) {
+                this.$message.error("上传头像图片只能是 jpg、png、jpeg 格式!");
+                return false;
+            }
+            const current = new Date().getTime()
+            // const key = null
+            try {
+                const { data } = await getToken()
+                const token = data.data
+                // this.uploadToken.key = key 
+                this.uploadToken.token = token 
+                return true
+            } catch (error) {
+                console.log(error);
+                
+                return error
+            }
+        },
         // 文件上传成功
         handlePictureSuccess (res, file) {
-            const arr = file.name.split('.')
-            this.pictureForm.imgUrl = res.data
-            this.pictureForm.title = arr[0]
+            console.log(res , file);
+            if( res.status === 500 ) {
+                this.$message.error('上传失败')
+                return false
+            }
+            let name = file.name.split('.')[0]
+            this.pictureForm.title = name
+            this.pictureForm.imgUrl = 'http://vote-teacher-video.luojigou.vip/'+res.hash
             if (!this.pictureForm.id) {
                 let upload = {
-                imgUrl: res.data,
-                title: arr[0]
+                imgUrl: 'http://vote-teacher-video.luojigou.vip/'+ res.hash,
                 }
                 this.uploadArr.push(upload)
                 // this.pictureForm.title = 
@@ -148,12 +162,23 @@ export default {
         },
         // 上传状态改变
         handleImgUrlChange (file, fileList) {
-        }
+        },
+        // notify 通知
+        open1() {
+         const h = this.$createElement;
+         this.$notify({
+         title: '上传提示',
+         message: h('i', { style: 'color: teal'}, '最多只能上传十张图片哦,上传成功自动添加名称')})
+         },
+        open2() {
+         const h = this.$createElement;
+         this.$notify({
+         title: '上传提示',
+         message: h('i', { style: 'color: teal'}, '修改图片只能上传一张图片哦')})
+         },
     },
     created () {
-       
         if (this.$route.query.id) {
-            
             this.pictureForm.id = this.$route.query.id 
             this.initPictureInfo()
             this.open2()
