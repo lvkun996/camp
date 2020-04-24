@@ -3,6 +3,9 @@ import { createAPI } from '@/utils/request.js'
 // 获取班级列表
 export const getClassList = params => createAPI(`/admin/clazz`, 'GET', params)
 
+// 删除班级
+export const deleteClass = id => createAPI(`/admin/clazz/${id}`, 'DELETE')
+
 // 获取老师列表
 export const getTeachList = params => createAPI(`/admin/teacher`, 'GET', params)
 

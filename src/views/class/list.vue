@@ -34,8 +34,8 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-tag
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-tag>
+              <!-- <el-tag
+                @click="handleEdit(scope.$index, scope.row)">编辑</el-tag> -->
               <el-tag
                 type="danger"
                 style="margin-left:10px"
@@ -57,7 +57,7 @@
 <script>
 import Header from '@/components/header'
 import Table from '@/components/table';
-import { getClassList } from '@/API/class/index';
+import { getClassList, deleteClass } from '@/API/class/index';
 
 export default {
   data() {
@@ -104,7 +104,22 @@ export default {
       console.log(index, row)
     },
     handleDelete(index, row) {
-      console.log(index, row)
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const { data } = await deleteClass(row.id);
+        if(data.status === 200) {
+          this.$message.success( {message: '删除成功'} );
+          this.loadClassList();
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     },
     handleClassCheck(index, row) {
       this.$router.push({ path: '/class/check', query: { activityItemId: row.activityItemId, clazzId: row.id } })

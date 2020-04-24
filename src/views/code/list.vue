@@ -118,11 +118,23 @@ export default {
       console.log(index, row)
     },
     async handleDelete(index, row) {
-      const { data } = await deleteCode(row.id);
-      if(data.status === 200) {
-        this.$message.success( {message: '删除成功'} );
-        this.loadBarCodeList();
-      }
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const { data } = await deleteCode(row.id);
+        if(data.status === 200) {
+          this.$message.success( {message: '删除成功'} );
+          this.loadBarCodeList();
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+      
     },
     handleClassCheck(index, row) {
       this.$router.push({ path: '/class/check', query: { activityItemId: row.activityItemId, clazzId: row.id } })
