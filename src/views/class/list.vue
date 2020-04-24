@@ -47,6 +47,8 @@
             </template>
           </el-table-column>
         </el-table>
+        <Pagination @currPage="accept" :total="total"/>
+
       </template>
     </Card>
   </div>
@@ -61,9 +63,16 @@ export default {
   data() {
     return {
       queryParams: {
-        isPage: 1
+        isPage: 1,
+        page: 1,
+        pageSize: 10
       },
+      // pagintion: {
+      //   isPage: 1,
+      //   page: 1
+      // },
       classList: [],
+      total: 0
     }
   },
   components: {
@@ -77,11 +86,18 @@ export default {
 
   },
   methods: {
+    accept (page) {
+      this.queryParams.page = page
+      this.loadClassList()
+    },
     async loadClassList() {
       const { data } = await getClassList({
         ...this.queryParams
       });
       this.classList = data.data.entityList || []
+      this.total = data.data.total;
+      console.log(this.total);
+
       console.log(this.classList);
     },
     handleEdit(index, row) {
