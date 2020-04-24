@@ -34,3 +34,6 @@ export const getBarCodeList = params => createAPI(`/admin/clazzBarCode`, 'GET', 
 
 // 删除二维码
 export const deleteCode = id => createAPI(`/admin/clazzBarCode/${id}`, 'DELETE');
+
+// 添加老师回复
+export const saveReplay = params => createAPI(`/admin/teacherReply`, 'POST', params);
