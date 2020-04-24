@@ -14,15 +14,17 @@
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="图片内容：">
                   <div v-for="(item, index) in props.row.content.imgList" :key="index">
-                    <el-image
-                      style="width: 100px; height: 100px"
-                      :src="item.url"></el-image>
+                    <div class="img-wrap">
+                      <el-image
+                        fit="cover"
+                        :src="item.url"></el-image>
+                    </div>
                   </div>
                 </el-form-item>
                  <el-form-item label="视频内容：">
-                   <div v-for="(item, index) in props.row.content.videoList" :key="index">
+                  <div v-for="(item, index) in props.row.content.videoList" :key="index">
                     <video-child :videoUrl="item.url"></video-child>
-                   </div>
+                  </div>
                 </el-form-item>
               </el-form>
             </template>
@@ -215,5 +217,8 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 100%;
+}
+.img-wrap {
+  max-width: 200px;
 }
 </style>

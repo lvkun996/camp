@@ -9,6 +9,8 @@ export const getTeachList = params => createAPI(`/admin/teacher`, 'GET', params)
 // 添加老师
 export const saveTeach = params => createAPI(`/admin/teacher`, 'POST', params)
 
+export const uptTeach = params => createAPI(`/admin/teacher`, 'PUT', params)
+
 // 删除老师
 export const deleteTeach = id => createAPI(`/admin/teacher/${id}`, 'DELETE')
 
@@ -23,3 +25,12 @@ export const setGoodAnswer = params => createAPI(`/admin/goodAnswer`, 'POST', pa
 
 // 设置/取消 优秀问题
 export const setKeyProblem = params => createAPI(`/admin/keyProblem`, 'POST', params)
+
+// 保存二维码
+export const saveBarCode = params => createAPI(`/admin/clazzBarCode`, 'POST', params)
+
+// 二维码列表
+export const getBarCodeList = params => createAPI(`/admin/clazzBarCode`, 'GET', params)
+
+// 删除二维码
+export const deleteCode = id => createAPI(`/admin/clazzBarCode/${id}`, 'DELETE');

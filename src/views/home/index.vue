@@ -110,6 +110,20 @@
                                 </el-menu-item>
                               </el-menu-item-group>
                             </el-submenu>
+                            <el-submenu index="code">
+                              <template slot="title">
+                                <i class="el-icon-date"></i>
+                                <span>二维码管理</span>
+                              </template>
+                              <el-menu-item-group>
+                                <el-menu-item index="/code/list">
+                                  <template slot="title">
+                                    <i class="el-icon-s-home"></i>
+                                    <span>二维码列表</span>
+                                  </template>
+                                </el-menu-item>
+                              </el-menu-item-group>
+                            </el-submenu>
                         </el-menu>
                 </el-aside>
                  <!-- 左侧侧边栏 -->
