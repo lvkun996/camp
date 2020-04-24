@@ -81,6 +81,34 @@
                                 </el-menu-item>
                               </el-menu-item-group>
                             </el-submenu>
+                            <el-submenu index="4">
+                              <template slot="title">
+                                <i class="el-icon-date"></i>
+                                <span>班级管理</span>
+                              </template>
+                              <el-menu-item-group>
+                                <el-menu-item index="/class/list">
+                                  <template slot="title">
+                                    <i class="el-icon-s-home"></i>
+                                    <span>班级列表</span>
+                                  </template>
+                                </el-menu-item>
+                              </el-menu-item-group>
+                            </el-submenu>
+                            <el-submenu index="teach">
+                              <template slot="title">
+                                <i class="el-icon-date"></i>
+                                <span>教师管理</span>
+                              </template>
+                              <el-menu-item-group>
+                                <el-menu-item index="/teach/list">
+                                  <template slot="title">
+                                    <i class="el-icon-s-home"></i>
+                                    <span>教师列表</span>
+                                  </template>
+                                </el-menu-item>
+                              </el-menu-item-group>
+                            </el-submenu>
                         </el-menu>
                 </el-aside>
                  <!-- 左侧侧边栏 -->
