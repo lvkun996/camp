@@ -61,8 +61,11 @@
                             </el-table-column>
                             <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-tag @click="goAddPeriodsPage(scope.row)" style="margin-right:10px">编辑</el-tag>
-                                <el-tag type="danger" @click="onDeletePeriods(scope.row)">删除</el-tag>
+                                <div class="tag">
+                                    <el-tag @click="goEditCourse(scope.row)">编辑课程</el-tag>
+                                      <el-tag @click="goAddPeriodsPage(scope.row)" >编辑营期</el-tag>
+                                    <el-tag type="danger" @click="onDeletePeriods(scope.row)">删除</el-tag>
+                                </div>
                             </template>
                             </el-table-column>
                         </el-table>
@@ -82,7 +85,7 @@ export default {
   data () {
     return {
         resourceData: [],
-        initPeriods: {
+        campId: {
             id: null,
             page: 1,
         },
@@ -96,12 +99,21 @@ export default {
     },
     // 开始新建营期
     newPeriods () {
-        window.sessionStorage.removeItem('periodsId')
         this.$router.push({
           path: '/newPeriods',
           query: {
-              tarningId: this.initPeriods.id
+              campId: this.campId.id
           }
+        })
+    },
+    // 编辑课程
+    goEditCourse (val) {
+        console.log(val);
+        this.$router.push({
+            path: '/newCourse',
+            query: {
+                activityItemId: val.id
+            }
         })
     },
     // 跳转到编辑营期页面
@@ -111,17 +123,14 @@ export default {
             path: '/newPeriods',
             query: {
                 PeriodsId: value.id,
-                trainingId: this.initPeriods.id
+                campId: this.campId.id
             }
         })
     },
     //   删除训练营营期
     async onDeletePeriods (val) {
         try {
-        const { data } =  await deleteDrillPeriods(val.id)
-
-        console.log(data);
-
+            await deleteDrillPeriods(val.id)
             this.$message({message: '删除成功', type: 'success'})
             this.initGetDrillPeriods()
         } catch (error) {
@@ -130,18 +139,16 @@ export default {
     },
     //   获取营期
     async initGetDrillPeriods () {
-    const { data } = await  getDrillPeriods(this.initPeriods)
+    const { data } = await  getDrillPeriods(this.campId)
     console.log(data);
     this.resourceData = data.data.entityList
     this.total = data.data.total
     }
   },
-  components: {
-  },
   created () {
     console.log(this.$route);
     if (this.$route.query.campId  ) {
-        this.initPeriods.id = this.$route.query.campId
+        this.campId.id = this.$route.query.campId
         this.initGetDrillPeriods()
     }
   }
@@ -198,5 +205,13 @@ export default {
 }
 .page{
     text-align: center;
+}
+.tag{  
+    width: 220px;
+    display: flex;
+    justify-content: space-between
+}
+/deep/ .el-image__inner{
+    object-fit: cover
 }
 </style>    

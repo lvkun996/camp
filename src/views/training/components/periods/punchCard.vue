@@ -36,8 +36,7 @@ export default {
     },
     methods: {
          confirmScene (value) {
-            console.log(value);
-            
+            console.log(value);   
             if ( !this.flag) {
                 this.$emit('transmitData', value)
                 this.flag = true
@@ -51,10 +50,10 @@ export default {
         },
         // 初始化打卡
         async initPunchCard () {
-        const { data } = await punshCardTaskList(this.pagintion)
-        console.log(data);
-        this.total = data.data.total
-        this.cardData = data.data.entityList
+            const { data } = await punshCardTaskList(this.pagintion)
+            console.log(data);
+            this.total = data.data.total
+            this.cardData = data.data.entityList
         }
     },
     created () {

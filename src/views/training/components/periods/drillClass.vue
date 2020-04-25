@@ -13,7 +13,7 @@
                         @change="onSaveTime" 
                         type="date"
                         placeholder="选择日期">
-                </el-date-picker>
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="情景展示">
                         <div class="show"  v-for ="(item , index) in singleData" :key="index">

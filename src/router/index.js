@@ -150,6 +150,11 @@ const routes = [
             path: '/editDrill',
             name: 'editDrill',
             component: () => import('@/views/training/components/editDrill.vue')
+          },
+          {
+            path: '/newCourse',
+            name: 'newCourse',
+            component: () => import('@/views/training/components/course/newCourse')
           }
         ]
       },
