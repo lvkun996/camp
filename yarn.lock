@@ -961,6 +961,19 @@
     url-toolkit "^2.1.3"
     video.js "^6.8.0 || ^7.0.0"
 
+"@videojs/http-streaming@1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@videojs/http-streaming/-/http-streaming-1.13.2.tgz#9e91f9f440ccaf6c8ed640a3614216397bb38558"
+  integrity sha512-U4Xhh+HxGpRBx9Gm0LlEadq85k9BwckzFgZmyhacauhK/27Mz0goKKFAt+BpxBNp2oHVdAdk8NHfneinsqni3Q==
+  dependencies:
+    aes-decrypter "3.0.0"
+    global "^4.3.0"
+    m3u8-parser "4.4.0"
+    mpd-parser "0.10.0"
+    mux.js "5.5.1"
+    url-toolkit "^2.1.3"
+    video.js "^6.8.0 || ^7.0.0"
+
 "@videojs/vhs-utils@^1.1.0":
   version "1.3.0"
   resolved "https://registry.npm.taobao.org/@videojs/vhs-utils/download/@videojs/vhs-utils-1.3.0.tgz#04fe402f603af9a5df4b88881fabba0cf13814c2"
@@ -8882,6 +8895,20 @@ verror@1.10.0:
     videojs-font "3.2.0"
     videojs-vtt.js "^0.15.2"
 
+video.js@^7.7.5:
+  version "7.8.2"
+  resolved "https://registry.yarnpkg.com/video.js/-/video.js-7.8.2.tgz#1394df0ba05680f0821c280ff14e6b3e1c3846d4"
+  integrity sha512-NIxRWCpq5N9QFnwPtemgdBf3IE3GAqLUR6R/12+qv6Flc/o2hRvPw3aFQwytRvBAqgc6Wg2whrHCh8ltQ3RiRA==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+    "@videojs/http-streaming" "1.13.2"
+    "@videojs/xhr" "2.5.1"
+    global "4.3.2"
+    keycode "^2.2.0"
+    safe-json-parse "4.0.0"
+    videojs-font "3.2.0"
+    videojs-vtt.js "^0.15.2"
+
 videojs-contrib-hls@^5.12.2:
   version "5.15.0"
   resolved "https://registry.npm.taobao.org/videojs-contrib-hls/download/videojs-contrib-hls-5.15.0.tgz#fe4957367e5d68b7d23f78ed32e37a9dd892a0a8"
@@ -9213,9 +9240,9 @@ websocket-driver@>=0.5.1:
     websocket-extensions ">=0.1.1"
 
 websocket-extensions@>=0.1.1:
-  version "0.1.3"
-  resolved "https://registry.npm.taobao.org/websocket-extensions/download/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-  integrity sha1-XS/yKXcAPsaHpLhwc9+7rBRszyk=
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 webwackify@0.1.6:
   version "0.1.6"
